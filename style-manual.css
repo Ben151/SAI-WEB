@@ -173,11 +173,17 @@ main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
   margin-right: calc(50% - 50vw);
 }
 
+/* מעטפת התמונה — בסיס למיקום במת ה-HUD */
 .showcase-media{
+  /* גובה התצוגה כמשתנה, כדי שבמת ה-HUD תוכל לחשב את חיתוך התמונה בדיוק */
+  --show-h: max(420px, min(78vh, 720px));
+  /* מיקום יחסי — בסיס לשכבות המוחלטות */
   position: relative;
-  height: min(78vh, 720px);
-  min-height: 420px;
+  /* הגובה בפועל לפי המשתנה */
+  height: var(--show-h);
+  /* חיתוך כל מה שחורג מהמעטפת */
   overflow: hidden;
+/* סגירת בלוק .showcase-media */
 }
 
 .showcase-img{
@@ -210,65 +216,200 @@ main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
   background: linear-gradient(to right, var(--bg-void), transparent);
 }
 
-/* ===== HUD Callouts — רטיקל טכני דק במקום תיבות ===== */
+/* ===== HUD — במת שכבה מדויקת מעל התמונה, תיבות וקווי מיקוד ===== */
 
-.hud-callout{
+/* במת ה-HUD: משחזרת את חיתוך object-fit:cover של התמונה, כדי שאחוזים בתוכה יתאימו לנקודות בתמונה */
+.hud-stage{
+  /* מיקום מוחלט בתוך מעטפת התמונה */
   position: absolute;
-  display: flex;
-  align-items: center;
-  transform: translateY(-50%);
-  direction: ltr;
-  white-space: nowrap;
+  /* נקודת עיגון אופקית במרכז — כמו object-position אופקי center */
+  left: 50%;
+  /* נקודת עיגון אנכית ב-18% — כמו object-position אנכי 18% */
+  top: 18%;
+  /* רוחב התמונה המוצגת: הגדול מבין רוחב המעטפת לבין גובה × יחס התמונה (2814/1536) */
+  width: max(100%, calc(var(--show-h) * 2814 / 1536));
+  /* גובה לפי יחס הפרופורציות המקורי של התמונה */
+  aspect-ratio: 2814 / 1536;
+  /* הזזה חזרה — משלימה את נוסחת החיתוך של object-position */
+  transform: translate(-50%, -18%);
+  /* מאפשר יחידות cqw — גודל הטקסט מתאים את עצמו לרוחב הבמה */
+  container-type: inline-size;
+  /* השכבה לא חוסמת לחיצות */
+  pointer-events: none;
+  /* מעל שכבות הדהייה */
   z-index: 2;
+/* סגירת בלוק .hud-stage */
 }
 
-.hud-callout--right{ flex-direction: row; }
-.hud-callout--left{ flex-direction: row-reverse; }
-
-.reticle{
-  position: relative;
-  flex: 0 0 auto;
-  width: 10px; height: 10px;
-  border: 1px solid var(--neon);
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--neon-glow);
-  animation: pulse 2.2s infinite;
-  z-index: 2;
-}
-
-.reticle::before, .reticle::after{
-  content: "";
+/* שכבת קווי המיקוד ב-SVG — מכסה את כל הבמה */
+.hud-links{
+  /* מיקום מוחלט בתוך הבמה */
   position: absolute;
-  background: rgba(0, 230, 118, 0.55);
+  /* מתיחה לכל הצדדים */
+  inset: 0;
+  /* רוחב מלא */
+  width: 100%;
+  /* גובה מלא */
+  height: 100%;
+  /* מאפשר לזוהר לחרוג מגבולות ה-SVG */
+  overflow: visible;
+/* סגירת בלוק .hud-links */
 }
 
-.reticle::before{ top: 50%; left: -7px; right: -7px; height: 1px; transform: translateY(-50%); }
-.reticle::after{ left: 50%; top: -7px; bottom: -7px; width: 1px; transform: translateX(-50%); }
-
-.callout-line{
-  flex: 0 0 auto;
-  width: clamp(26px, 4vw, 60px);
-  height: 1px;
-  background: linear-gradient(90deg, var(--neon-dim), transparent);
+/* קו מיקוד ירוק-צהוב בסיסי */
+.hud-line{
+  /* ללא מילוי — רק קו */
+  fill: none;
+  /* צבע ירוק-צהוב של HUD */
+  stroke: #d4ff3a;
+  /* קו דק ואלגנטי */
+  stroke-width: 1.1px;
+  /* פינות מעוגלות בשבירות הקו */
+  stroke-linejoin: round;
+  /* קצוות מעוגלים */
+  stroke-linecap: round;
+  /* עובי קבוע בכל גודל מסך — הקו לא מתעבה עם התמונה */
+  vector-effect: non-scaling-stroke;
+  /* זוהר רך סביב הקו */
+  filter: drop-shadow(0 0 2px rgba(212, 255, 58, 0.55));
+/* סגירת בלוק .hud-line */
 }
 
-.hud-callout--left .callout-line{ background: linear-gradient(270deg, var(--neon-dim), transparent); }
+/* קווי תא הסוללה — ירוק המערכת */
+.hud-line--green{
+  /* צבע ירוק טקטי */
+  stroke: var(--neon);
+  /* זוהר ירוק עדין */
+  filter: drop-shadow(0 0 2px var(--neon-glow));
+/* סגירת בלוק .hud-line--green */
+}
 
-.callout-label{
-  flex: 0 0 auto;
+/* טבעת יעד בקצה הקו — מסמנת את הרכיב בגוף הלוחם */
+.hud-target{
+  /* מילוי כהה שקוף */
+  fill: rgba(212, 255, 58, 0.15);
+  /* מסגרת ירוקה-צהובה */
+  stroke: #d4ff3a;
+  /* עובי המסגרת — דק */
+  stroke-width: 1.1px;
+  /* עובי קבוע */
+  vector-effect: non-scaling-stroke;
+  /* זוהר */
+  filter: drop-shadow(0 0 4px rgba(212, 255, 58, 0.8));
+  /* פעימה עדינה */
+  animation: hud-target-pulse 2.2s ease-in-out infinite;
+/* סגירת בלוק .hud-target */
+}
+
+/* טבעת היעד של תא הסוללה בירוק */
+.hud-target--green{
+  /* מילוי ירוק שקוף */
+  fill: rgba(0, 230, 118, 0.15);
+  /* מסגרת ירוקה */
+  stroke: var(--neon);
+  /* זוהר ירוק */
+  filter: drop-shadow(0 0 4px var(--neon-glow));
+/* סגירת בלוק .hud-target--green */
+}
+
+/* הנפשת פעימה לטבעות היעד */
+@keyframes hud-target-pulse{
+  /* התחלה וסוף — שקיפות מלאה */
+  0%, 100%{
+    /* אטימות מלאה */
+    opacity: 1;
+  /* סגירת שלב קצה */
+  }
+  /* אמצע — מעומעם */
+  50%{
+    /* אטימות חלקית */
+    opacity: 0.45;
+  /* סגירת שלב אמצע */
+  }
+/* סגירת הנפשת hud-target-pulse */
+}
+
+/* תיבת טקסט HUD — זכוכית כהה עם מסגרת ירוקה */
+.hud-box{
+  /* מיקום מוחלט באחוזים מהבמה */
+  position: absolute;
+  /* רוחב יחסי לבמה — 14% מרוחב התמונה */
+  width: 14%;
+  /* כיוון עברית */
   direction: rtl;
+  /* יישור טקסט לימין */
   text-align: right;
-  background: rgba(10, 13, 15, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  /* ריווח פנימי שמתאים את עצמו לגודל הבמה */
+  padding: clamp(5px, 0.55cqw, 10px) clamp(7px, 0.75cqw, 14px);
+  /* רקע זכוכית כהה */
+  background: rgba(10, 13, 15, 0.62);
+  /* טשטוש מאחורי התיבה */
+  backdrop-filter: blur(8px);
+  /* טשטוש עם קידומת Safari */
+  -webkit-backdrop-filter: blur(8px);
+  /* מסגרת ירוקה דקה */
+  border: 1px solid rgba(0, 230, 118, 0.45);
+  /* פס ירוק עבה בצד ימין — מוביל את העין לכותרת */
+  border-inline-start: 3px solid var(--neon);
+  /* פינות מעוגלות קלות */
   border-radius: 4px;
-  padding: 6px 12px;
-  max-width: 210px;
-  white-space: normal;
+  /* צל עומק וזוהר ירוק עדין */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), 0 0 14px rgba(0, 230, 118, 0.18);
+/* סגירת בלוק .hud-box */
 }
 
-.callout-label h4{ font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 3px; }
-.callout-label p{ font-size: 0.72rem; color: var(--text-mid); line-height: 1.45; }
+/* כותרת התיבה — שם הרכיב */
+.hud-box h4{
+  /* גודל שמתאים לרוחב התמונה, עם גבולות קריאות */
+  font-size: clamp(11px, 0.82cqw, 16px);
+  /* משקל מודגש */
+  font-weight: 700;
+  /* ירוק טקטי */
+  color: var(--neon);
+  /* מרווח מתחת לכותרת */
+  margin-bottom: 3px;
+  /* זוהר עדין לטקסט */
+  text-shadow: 0 0 6px var(--neon-glow);
+/* סגירת בלוק .hud-box h4 */
+}
+
+/* תיאור הרכיב */
+.hud-box p{
+  /* גודל שמתאים לרוחב התמונה */
+  font-size: clamp(10px, 0.66cqw, 13px);
+  /* טקסט בהיר לקריאות על הרקע הכהה */
+  color: #d6e4dd;
+  /* גובה שורה נוח */
+  line-height: 1.45;
+/* סגירת בלוק .hud-box p */
+}
+
+/* כתף ימין: הפינה הימנית-תחתונה של התיבה צמודה לכוונת שעל הכתף (x=892, y=290 מתוך 2000×1092) */
+.hud-box--r-shoulder{
+  /* מרחק מהצד הימני של הבמה */
+  right: 55.4%;
+  /* מרחק מתחתית הבמה — התיבה גדלה כלפי מעלה */
+  bottom: 73.4%;
+/* סגירת בלוק .hud-box--r-shoulder */
+}
+
+/* כתף שמאל: הפינה השמאלית-תחתונה של התיבה צמודה לכוונת שעל הכתף (x=1188, y=290) */
+.hud-box--l-shoulder{
+  /* מרחק מהצד השמאלי של הבמה */
+  left: 59.4%;
+  /* מרחק מתחתית הבמה */
+  bottom: 73.4%;
+/* סגירת בלוק .hud-box--l-shoulder */
+}
+
+/* מרכז החזה: בפינה הימנית העליונה; תחתית התיבה בתחילת הקו היורד (y=215) */
+.hud-box--chest{
+  /* מרחק מהצד הימני של הבמה */
+  right: 11%;
+  /* מרחק מתחתית הבמה */
+  bottom: 80.3%;
+/* סגירת בלוק .hud-box--chest */
+}
 
 /* ===== רשימה רציפה כללית (Hardware legend) ===== */
 
@@ -407,6 +548,21 @@ main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
 
 /* ===== רספונסיביות ===== */
 
+/* מסכים בינוניים: התמונה מוצגת במלואה ביחס המקורי, כדי שתיבות הצדדים לא ייחתכו */
+@media (max-width: 1100px){
+  /* מעטפת התמונה */
+  .showcase-media{
+    /* גובה אפס במשתנה — הבמה תהיה ברוחב 100% בדיוק */
+    --show-h: 0px;
+    /* גובה אוטומטי לפי יחס הפרופורציות */
+    height: auto;
+    /* יחס הפרופורציות של התמונה — ללא חיתוך */
+    aspect-ratio: 2814 / 1536;
+  /* סגירת בלוק מעטפת התמונה */
+  }
+/* סגירת בלוק @media (max-width: 1100px) */
+}
+
 @media (max-width: 900px){
   .adv-list{ grid-template-columns: 1fr; }
   .adv-item{ border-inline-start: none; border-top: 1px solid var(--hairline); padding: 28px 0 0; }
@@ -421,13 +577,20 @@ main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
   .flow-item:nth-child(-n+2){ border-top: 1px solid var(--hairline); }
   .flow-item:first-child{ border-top: none; }
 
-  .callout-label{ max-width: 130px; padding: 5px 8px; }
-  .callout-label h4{ font-size: 0.7rem; }
-  .callout-label p{ font-size: 0.62rem; }
-  .callout-line{ width: 16px; }
+  /* במסך צר — מסתירים את שורת התיאור ומשאירים רק את שם הרכיב, כדי שהתיבות לא יכסו את הלוחם */
+  .hud-box p{
+    /* הסתרת התיאור */
+    display: none;
+  /* סגירת בלוק הסתרת התיאור */
+  }
 }
 
 @media (max-width: 520px){
-  .callout-label{ display: none; }
+  /* בטלפון אין מקום לשכבת ה-HUD — מסתירים את כל הבמה */
+  .hud-stage{
+    /* הסתרה מלאה */
+    display: none;
+  /* סגירת בלוק הסתרת הבמה */
+  }
   .showcase-media{ height: 60vh; }
 }

@@ -34,6 +34,8 @@ body{
   font-family: var(--font-body);
   line-height: 1.7;
   min-height: 100vh;
+  /* חיתוך גלישה אופקית — בלי פס גלילה אופקי (clip ולא hidden, כדי שסרגל הניווט הדביק ימשיך לעבוד) */
+  overflow-x: clip;
 }
 
 a{ color: inherit; text-decoration: none; }
@@ -153,75 +155,185 @@ main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
 .section-title{ font-size: 1.9rem; font-weight: 700; margin-bottom: 12px; }
 .section-sub{ color: var(--text-dim); font-size: 0.98rem; }
 
-/* ===== הירו — טיפוגרפיה בולטת עם סמל דהוי ברקע ===== */
+/* ===== הירו — טיפוגרפיה בולטת עם סמל דהוי ברקע, ממורכזת על הציר האנכי של המסך ===== */
 
+/* מעטפת ההירו: עמודה גמישה שממרכזת כל ילד בדיוק על ציר המרכז */
 .hero{
+  /* מיקום יחסי — בסיס לסמל הדהוי שברקע */
   position: relative;
-  padding: 120px 0 84px;
+  /* פריסה גמישה */
+  display: flex;
+  /* הילדים אחד מתחת לשני */
+  flex-direction: column;
+  /* מרכוז אופקי של כל הילדים */
+  align-items: center;
+  /* מרכוז אנכי של התוכן בתוך גובה ההירו */
+  justify-content: center;
+  /* מרכוז הטקסט בתוך כל שורה */
   text-align: center;
+  /* גובה מינימלי: כמעט מסך מלא פחות סרגל הניווט — ההירו ממלא את מסך הפתיחה */
+  min-height: calc(100vh - 78px);
+  /* ריווח אנכי מאוזן מעל ומתחת לתוכן */
+  padding: 72px 0;
+  /* רוחב מרבי של אזור ההירו */
   max-width: 860px;
+  /* מרכוז ההירו בתוך main */
   margin: 0 auto;
-  overflow: hidden;
+  /* שכבת ערימה עצמאית — הסמל הדהוי נשאר מאחורי הטקסט ולא מתחת לרקע הדף */
+  isolation: isolate;
+/* סגירת בלוק .hero */
 }
 
+/* הסמל הדהוי ברקע — ממורכז בדיוק מאחורי הכותרת */
 .hero::before{
+  /* פסאודו-אלמנט חייב תוכן */
   content: "";
+  /* מיקום מוחלט ביחס להירו */
   position: absolute;
-  top: 50%; left: 50%;
-  width: 640px; height: 640px;
+  /* נקודת עיגון אנכית במרכז */
+  top: 50%;
+  /* נקודת עיגון אופקית במרכז */
+  left: 50%;
+  /* רוחב הסמל — לא חורג מרוחב המסך */
+  width: min(640px, 92vw);
+  /* גובה ביחס לבאנר הלוגו (497×193) */
+  aspect-ratio: 497 / 193;
+  /* הזזה חזרה בחצי מהגודל — מרכוז מדויק */
   transform: translate(-50%, -50%);
+  /* תמונת הלוגו */
   background-image: url("assets/logo.png");
+  /* ללא חזרה */
   background-repeat: no-repeat;
+  /* ממורכזת */
   background-position: center;
+  /* מותאמת בדיוק לאלמנט */
   background-size: contain;
-  opacity: 0.055;
+  /* דהייה רכה בקצוות — מעלים את המלבן של הבאנר ומשאיר הילה עגולה */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+  /* אותה דהייה בתחביר התקני */
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+  /* שקיפות גבוהה מאוד — רק רמז ברקע */
+  opacity: 0.07;
+  /* הגברת רוויה קלה לירוק */
   filter: saturate(1.4);
+  /* לא חוסם לחיצות */
   pointer-events: none;
+  /* מאחורי הטקסט */
   z-index: -1;
+/* סגירת בלוק .hero::before */
 }
 
+/* תגית טכנית מעל הכותרת */
 .hero-tag{
+  /* בלוק בגודל התוכן — הקו התחתון ברוחב הטקסט בלבד */
   display: inline-block;
+  /* לא חורג מרוחב המסך בטלפון צר — נשבר לשורה שנייה במקום לגלוש */
+  max-width: 100%;
+  /* גופן כותרות */
   font-family: var(--font-head);
+  /* גודל קטן */
   font-size: 0.72rem;
+  /* משקל בינוני-מודגש */
   font-weight: 600;
+  /* ירוק טקטי */
   color: var(--neon);
+  /* ריווח אותיות רחב */
   letter-spacing: 0.16em;
+  /* פיצוי על ריווח האות האחרונה — הטקסט יושב בדיוק במרכז */
+  padding-inline-start: 0.16em;
+  /* ריווח מתחת לטקסט, מעל הקו */
   padding-bottom: 10px;
-  margin-bottom: 30px;
+  /* מרווח מהכותרת */
+  margin-bottom: 28px;
+  /* קו דק מתחת לתגית */
   border-bottom: 1px solid var(--hairline);
+  /* כיוון משמאל לימין — טקסט אנגלי */
+  direction: ltr;
+/* סגירת בלוק .hero-tag */
 }
 
+/* הכותרת הראשית */
 .hero-title{
+  /* גודל רספונסיבי */
   font-size: clamp(2.2rem, 5.4vw, 3.6rem);
+  /* משקל כבד */
   font-weight: 900;
+  /* גובה שורה צפוף — שתי השורות נראות כיחידה אחת */
+  line-height: 1.12;
+  /* ריווח אותיות קל */
   letter-spacing: 0.01em;
+  /* כיוון משמאל לימין — טקסט אנגלי */
   direction: ltr;
-  display: inline-block;
+  /* איזון השורות — כשהכותרת נשברת, השורות יוצאות באורך דומה */
+  text-wrap: balance;
+  /* צבע טקסט בהיר */
   color: var(--text-hi);
+  /* זוהר ירוק עדין */
   text-shadow: 0 0 40px rgba(0, 230, 118, 0.22);
+  /* ללא שוליים — הריווח נקבע בתגית ובסיסמה */
+  margin: 0;
+/* סגירת בלוק .hero-title */
 }
 
-.hero-title-accent{ color: var(--neon); }
-
-.hero-motto{
-  font-family: var(--font-head);
-  direction: ltr;
-  font-size: 1.06rem;
-  font-weight: 400;
+/* הנקודה הירוקה בכותרת */
+.hero-title-accent{
+  /* צבע ירוק טקטי */
   color: var(--neon);
+/* סגירת בלוק .hero-title-accent */
+}
+
+/* סיסמת המערכת מתחת לכותרת */
+.hero-motto{
+  /* גופן כותרות */
+  font-family: var(--font-head);
+  /* כיוון משמאל לימין — טקסט אנגלי */
+  direction: ltr;
+  /* גודל טקסט */
+  font-size: 1.06rem;
+  /* משקל רגיל */
+  font-weight: 400;
+  /* ירוק טקטי */
+  color: var(--neon);
+  /* ריווח אותיות */
   letter-spacing: 0.1em;
-  margin: 16px 0 30px;
+  /* פיצוי על ריווח האות האחרונה — מרכוז מדויק */
+  padding-inline-start: 0.1em;
+  /* ריווח שווה מעל ומתחת — מאוזן ביחס לכותרת ולפסקה */
+  margin: 18px 0 28px;
+/* סגירת בלוק .hero-motto */
 }
 
+/* פסקת התיאור — בלוק ממורכז ברוחב מוגבל */
 .hero-desc{
+  /* גודל טקסט */
   font-size: 1.02rem;
+  /* צבע טקסט בינוני */
   color: var(--text-mid);
+  /* רוחב מרבי — שורות קריאות שלא נמתחות לכל המסך */
   max-width: 700px;
+  /* רוחב מלא עד הגבול */
+  width: 100%;
+  /* מרכוז הבלוק ומרווח מהכפתורים */
   margin: 0 auto 44px;
+  /* מרכוז כל שורה */
+  text-align: center;
+  /* מניעת מילה בודדת בשורה האחרונה */
+  text-wrap: pretty;
+/* סגירת בלוק .hero-desc */
 }
 
-.hero-actions{ display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+/* כפתורי הפעולה — שורה ממורכזת */
+.hero-actions{
+  /* פריסה גמישה */
+  display: flex;
+  /* רווח בין הכפתורים */
+  gap: 16px;
+  /* מרכוז הכפתורים */
+  justify-content: center;
+  /* שבירה לשורה חדשה במסך צר */
+  flex-wrap: wrap;
+/* סגירת בלוק .hero-actions */
+}
 
 /* ===== כפתורים ===== */
 

@@ -46,8 +46,8 @@
 
 /* ---------- 2. כפתור LOGIN בסרגל הפיקוד ---------- */
 
-/* כפתור ההתחברות בתוך הניווט; הקידומת .cmd-nav מעלה את הספציפיות מעל .nav-link של כל עמוד */
-.cmd-nav .nav-login-btn{
+/* כפתור ההתחברות באזור המיתוג (ליד הלוגו); סלקטור ללא קידומת .cmd-nav כי הכפתור כבר אינו בתוך הניווט */
+.nav-login-btn{
   /* איפוס המראה המובנה של כפתור בדפדפן (בעיקר ב-Safari) */
   appearance: none;
   /* פריסה גמישה כדי למרכז את הטקסט אנכית ואופקית */
@@ -86,18 +86,18 @@
   box-shadow: 0 0 10px rgba(0, 230, 118, 0.15), inset 0 0 8px rgba(0, 230, 118, 0.08);
   /* מעבר חלק בין מצבים (ריחוף, לחיצה) במקום קפיצה חדה */
   transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
-/* סגירת בלוק .cmd-nav .nav-login-btn */
+/* סגירת בלוק .nav-login-btn */
 }
 
 /* ביטול קו התחתון המונפש שמוגדר ל-.nav-link בעמוד התחקור — לא מתאים לכפתור ממוסגר */
-.cmd-nav .nav-login-btn::after{
+.nav-login-btn::after{
   /* הסתרה מלאה של הפסאודו-אלמנט */
   display: none;
-/* סגירת בלוק .cmd-nav .nav-login-btn::after */
+/* סגירת בלוק .nav-login-btn::after */
 }
 
 /* מצב ריחוף על כפתור ההתחברות */
-.cmd-nav .nav-login-btn:hover{
+.nav-login-btn:hover{
   /* מילוי ירוק מלא — משוב חזותי ברור שהכפתור מוכן ללחיצה */
   background: var(--login-neon);
   /* טקסט כהה על רקע ירוק — ניגודיות מרבית */
@@ -106,25 +106,25 @@
   border-color: var(--login-neon);
   /* הגברת הזוהר — הכפתור "נדלק" */
   box-shadow: 0 0 18px var(--login-neon-glow);
-/* סגירת בלוק .cmd-nav .nav-login-btn:hover */
+/* סגירת בלוק .nav-login-btn:hover */
 }
 
 /* מצב פוקוס מהמקלדת (Tab) — נגישות למפעיל שעובד בלי עכבר */
-.cmd-nav .nav-login-btn:focus-visible{
+.nav-login-btn:focus-visible{
   /* ביטול קו המתאר הברירת-מחדל של הדפדפן */
   outline: none;
   /* טבעת פוקוס ירוקה כפולה — ברורה גם על רקע כהה */
   box-shadow: 0 0 0 2px var(--login-bg-void), 0 0 0 4px var(--login-neon);
-/* סגירת בלוק .cmd-nav .nav-login-btn:focus-visible */
+/* סגירת בלוק .nav-login-btn:focus-visible */
 }
 
 /* מצב לחיצה פעילה (בזמן שהכפתור לחוץ) */
-.cmd-nav .nav-login-btn:active{
+.nav-login-btn:active{
   /* הקטנה קלה — תחושה פיזית של לחיצה על מתג */
   transform: scale(0.96);
   /* החלשת הזוהר — הכפתור "שוקע" */
   box-shadow: 0 0 6px var(--login-neon-glow);
-/* סגירת בלוק .cmd-nav .nav-login-btn:active */
+/* סגירת בלוק .nav-login-btn:active */
 }
 
 
@@ -138,8 +138,8 @@
   inset: 0;
   /* שכבה עליונה מעל סרגל הפיקוד וכל תוכן העמוד */
   z-index: 1000;
-  /* פריסה גמישה — הדרך הפשוטה למרכז את התיבה */
-  display: flex;
+  /* מוסתר כברירת מחדל — החלון לא קופץ בטעינת העמוד, רק אחרי לחיצה על LOGIN */
+  display: none;
   /* מרכוז אנכי של התיבה */
   align-items: center;
   /* מרכוז אופקי של התיבה */
@@ -159,11 +159,117 @@
 /* סגירת בלוק .modal-overlay */
 }
 
-/* כשהתכונה hidden קיימת — חובה, כי display:flex שלמעלה דורס את ההסתרה המובנית של hidden */
-.modal-overlay[hidden]{
-  /* הסתרה מלאה של החלון עד שה-JavaScript מסיר את hidden */
+/* פתיחת החלון: רק כשתיבת הסימון modal-toggle מסומנת (לחיצה על LOGIN) */
+.modal-toggle:checked ~ .modal-overlay{
+  /* הצגת השכבה כפריסה גמישה — ממרכזת את התיבה */
+  display: flex;
+/* סגירת בלוק .modal-toggle:checked ~ .modal-overlay */
+}
+
+/* אחרי SIGN IN: auth-state מסומנת — החלון נסגר גם אם modal-toggle עדיין מסומנת */
+.auth-state:checked ~ .modal-overlay{
+  /* הסתרה מלאה של החלון במצב "מחובר" */
   display: none;
-/* סגירת בלוק .modal-overlay[hidden] */
+/* סגירת בלוק .auth-state:checked ~ .modal-overlay */
+}
+
+/* שתי תיבות הסימון ששומרות את המצב — מוסתרות מהעין אך נשארות פעילות */
+.modal-toggle,
+/* תיבת הסימון של מצב "מחובר" */
+.auth-state{
+  /* הוצאה מזרימת העמוד כדי שלא תתפוס מקום */
+  position: absolute;
+  /* גודל אפסי */
+  width: 1px;
+  /* גובה אפסי */
+  height: 1px;
+  /* שקיפות מלאה — בלתי נראית */
+  opacity: 0;
+  /* לא חוסמת לחיצות על אלמנטים אחרים */
+  pointer-events: none;
+/* סגירת בלוק תיבות הסימון */
+}
+
+/* הרקע הלחיץ: תווית שמכסה את כל השכבה — לחיצה מחוץ לתיבה סוגרת את החלון */
+.modal-backdrop{
+  /* מיקום מוחלט בתוך השכבה הקבועה */
+  position: absolute;
+  /* מתיחה לכל המסך */
+  inset: 0;
+  /* סמן יד — מרמז שאפשר ללחוץ כדי לסגור */
+  cursor: pointer;
+/* סגירת בלוק .modal-backdrop */
+}
+
+/* אחרי SIGN IN — מסתירים את כפתור LOGIN */
+.auth-state:checked ~ .cmd-bar .nav-login-btn{
+  /* הסתרה מלאה של הכפתור */
+  display: none;
+/* סגירת בלוק הסתרת LOGIN */
+}
+
+/* תג המפעיל המחובר — מוסתר כברירת מחדל */
+.operator-badge{
+  /* לא מוצג עד ההתחברות */
+  display: none;
+/* סגירת בלוק .operator-badge */
+}
+
+/* הצגת תג המפעיל אחרי SIGN IN */
+.auth-state:checked ~ .cmd-bar .operator-badge{
+  /* פריסה גמישה בשורה — נקודה וטקסט */
+  display: inline-flex;
+  /* יישור אנכי */
+  align-items: center;
+  /* רווח בין הנקודה לטקסט */
+  gap: 8px;
+  /* ריווח פנימי */
+  padding: 7px 14px;
+  /* מרווח מהטקסט שליד הלוגו */
+  margin-inline-start: 10px;
+  /* רקע ירוק עדין */
+  background: var(--login-neon-faint);
+  /* גבול ירוק מעומעם */
+  border: 1px solid var(--login-neon-dim);
+  /* פינות כמעט חדות */
+  border-radius: 3px;
+  /* טקסט ירוק */
+  color: var(--login-neon);
+  /* גופן מונו-ספייס */
+  font-family: var(--login-font-mono);
+  /* גודל טקסט קטן */
+  font-size: 0.75rem;
+  /* משקל מודגש */
+  font-weight: 700;
+  /* ריווח אותיות רחב */
+  letter-spacing: 0.16em;
+  /* ללא שבירת שורה */
+  white-space: nowrap;
+/* סגירת בלוק הצגת תג המפעיל */
+}
+
+/* טקסט התג — CSS לא יכול לקרוא את הערך שהוקלד, לכן טקסט קבוע */
+.auth-state:checked ~ .cmd-bar .operator-badge::after{
+  /* תוכן התג */
+  content: "OPERATOR ONLINE";
+/* סגירת בלוק טקסט התג */
+}
+
+/* נקודת "מחובר" ירוקה לפני הטקסט */
+.auth-state:checked ~ .cmd-bar .operator-badge::before{
+  /* פסאודו-אלמנט חייב תוכן */
+  content: "";
+  /* רוחב הנקודה */
+  width: 7px;
+  /* גובה הנקודה */
+  height: 7px;
+  /* עיגול מלא */
+  border-radius: 50%;
+  /* מילוי ירוק */
+  background: var(--login-neon);
+  /* זוהר סביב הנקודה */
+  box-shadow: 0 0 8px var(--login-neon-glow);
+/* סגירת בלוק נקודת המחובר */
 }
 
 
@@ -200,7 +306,7 @@
 /* סגירת בלוק .modal-box */
 }
 
-/* פס אזהרה ענברי דק בראש התיבה — "גבול אזהרה עדין": אזור מאובטח */
+/* קו פרימיום בראש התיבה: מעבר צבע ירוק שנמוג בקצוות, עם זוהר וברק שחולף לאורכו */
 .modal-box::before{
   /* פסאודו-אלמנט חייב תוכן (גם ריק) כדי להופיע */
   content: "";
@@ -210,11 +316,42 @@
   top: 0;
   /* מתיחה מצד לצד */
   inset-inline: 0;
-  /* פס דק מאוד */
+  /* קו דק ואלגנטי */
   height: 2px;
-  /* פסים אלכסוניים ענבר/שקוף — מראה סרט אזהרה צבאי */
-  background: repeating-linear-gradient(135deg, var(--login-warn-dim) 0 10px, transparent 10px 20px);
+  /* שכבה עליונה: ברק לבן צר; שכבה תחתונה: ירוק שנמוג לשקוף בשני הקצוות */
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%) no-repeat, linear-gradient(90deg, transparent 0%, var(--login-neon-dim) 18%, var(--login-neon) 50%, var(--login-neon-dim) 82%, transparent 100%);
+  /* גודל הברק: 30% מהרוחב; הקו הירוק: רוחב מלא */
+  background-size: 30% 100%, 100% 100%;
+  /* מיקום התחלתי של הברק — מחוץ לקו משמאל */
+  background-position: -40% 0, 0 0;
+  /* זוהר ירוק רך מתחת לקו */
+  box-shadow: 0 0 12px var(--login-neon-glow), 0 0 2px var(--login-neon);
+  /* הנפשת הברק שחולף לאורך הקו בלולאה */
+  animation: login-line-sheen 3.2s ease-in-out infinite;
 /* סגירת בלוק .modal-box::before */
+}
+
+/* הנפשת הברק: מעבר משמאל לימין לאורך הקו */
+@keyframes login-line-sheen{
+  /* התחלה — הברק מחוץ לקו בצד שמאל */
+  0%{
+    /* מיקום הברק והקו הירוק */
+    background-position: -40% 0, 0 0;
+  /* סגירת שלב 0% */
+  }
+  /* סוף המעבר — הברק יצא בצד ימין */
+  60%{
+    /* מיקום הברק והקו הירוק */
+    background-position: 140% 0, 0 0;
+  /* סגירת שלב 60% */
+  }
+  /* המתנה קצרה לפני הסבב הבא */
+  100%{
+    /* מיקום הברק והקו הירוק */
+    background-position: 140% 0, 0 0;
+  /* סגירת שלב 100% */
+  }
+/* סגירת הנפשת login-line-sheen */
 }
 
 
@@ -518,6 +655,62 @@
 /* סגירת בלוק .login-status.is-success */
 }
 
+/* שורת הסטטוס בתוך הטופס — מוצגת תמיד (דורס את :empty), הטקסט נוצר ב-CSS */
+.modal-form .login-status{
+  /* הצגה כבלוק */
+  display: block;
+/* סגירת בלוק הצגת שורת הסטטוס */
+}
+
+/* טופס לא מלא — סטטוס ענבר "ממתין" */
+.modal-form:invalid .login-status{
+  /* טקסט ענבר */
+  color: var(--login-warn);
+  /* רקע ענבר שקוף */
+  background: rgba(255, 179, 0, 0.08);
+  /* פס צד ענבר */
+  border-inline-start-color: var(--login-warn);
+/* סגירת בלוק סטטוס ממתין */
+}
+
+/* טקסט הסטטוס כשהטופס לא מלא */
+.modal-form:invalid .login-status::before{
+  /* תוכן ההודעה */
+  content: "AWAITING CREDENTIALS…";
+/* סגירת בלוק טקסט ממתין */
+}
+
+/* טופס מלא — סטטוס ירוק "מוכן" */
+.modal-form:valid .login-status{
+  /* טקסט ירוק */
+  color: var(--login-neon);
+  /* רקע ירוק שקוף */
+  background: var(--login-neon-faint);
+  /* פס צד ירוק */
+  border-inline-start-color: var(--login-neon);
+/* סגירת בלוק סטטוס מוכן */
+}
+
+/* טקסט הסטטוס כשהטופס מלא */
+.modal-form:valid .login-status::before{
+  /* תוכן ההודעה */
+  content: "CREDENTIALS READY — SIGN IN";
+/* סגירת בלוק טקסט מוכן */
+}
+
+/* כפתור SIGN IN מנוטרל כל עוד אחד השדות ריק */
+.modal-form:invalid .modal-submit{
+  /* חסימת לחיצה — לא ניתן להתחבר עם שדות ריקים */
+  pointer-events: none;
+  /* שקיפות חלקית — נראה כבוי */
+  opacity: 0.45;
+  /* ביטול הזוהר */
+  box-shadow: none;
+  /* צבע אפור-ירקרק במקום ירוק בוהק */
+  filter: grayscale(0.6);
+/* סגירת בלוק הכפתור המנוטרל */
+}
+
 
 /* ---------- 8. כפתור Sign In ---------- */
 
@@ -688,10 +881,10 @@
   /* סגירת בלוק .modal-title */
   }
   /* כפתור LOGIN בטלפון */
-  .cmd-nav .nav-login-btn{
+  .nav-login-btn{
     /* ביטול המרווח הצדדי — הניווט נשבר לשורות */
     margin-inline-start: 0;
-  /* סגירת בלוק .cmd-nav .nav-login-btn */
+  /* סגירת בלוק .nav-login-btn */
   }
 /* סגירת בלוק @media (max-width: 480px) */
 }
@@ -702,8 +895,10 @@
   .modal-overlay,
   /* תיבת הדיאלוג */
   .modal-box,
+  /* קו הפרימיום שבראש התיבה — עוצרים את הברק החולף */
+  .modal-box::before,
   /* כפתור LOGIN */
-  .cmd-nav .nav-login-btn,
+  .nav-login-btn,
   /* כפתור הסגירה */
   .modal-close,
   /* כפתור Sign In */
