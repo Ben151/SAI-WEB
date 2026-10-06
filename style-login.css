@@ -1,0 +1,720 @@
+/* ============================================================
+   SAI — חלון אימות מפעיל (LOGIN)
+   קובץ עצמאי: נטען אחרי גיליון הסגנון של כל עמוד, ולכן עובד בכל ארבעת העמודים
+   ============================================================ */
+
+
+/* ---------- 1. משתני עיצוב ייעודיים לחלון ההתחברות ---------- */
+
+/* בחירת שורש המסמך כדי שהמשתנים יהיו זמינים לכל האלמנטים בעמוד */
+:root{
+  /* רקע כהה עמוק — צבע הבסיס הטקטי של המערכת */
+  --login-bg-void: #0a0d0f;
+  /* רקע זכוכית חצי-שקוף לתיבה — מאפשר לטשטוש שמאחור לבצבץ (אפקט Glassmorphism) */
+  --login-bg-glass: rgba(10, 13, 15, 0.72);
+  /* רקע כהה לשדות הקלט — כהה מעט יותר מהתיבה כדי \שהשדה ייראה "שקוע" */
+  --login-bg-input: rgba(4, 6, 7, 0.85);
+  /* ירוק טקטי — צבע ההדגשה הראשי של המערכת */
+  --login-neon: #00e676;
+  /* ירוק מעומעם — לגבולות במצב רגיל, כדי לא להציף את העין */
+  --login-neon-dim: rgba(0, 230, 118, 0.35);
+  /* ירוק שקוף מאוד — לרקעים עדינים במצב ריחוף */
+  --login-neon-faint: rgba(0, 230, 118, 0.08);
+  /* זוהר ירוק — לצללים זוהרים (glow) סביב אלמנטים פעילים */
+  --login-neon-glow: rgba(0, 230, 118, 0.45);
+  /* ענבר אזהרה — לגבולות אזהרה עדינים ולהודעות "בתהליך" */
+  --login-warn: #ffb300;
+  /* ענבר שקוף — לפס האזהרה העליון ולגבולות אזהרה עדינים */
+  --login-warn-dim: rgba(255, 179, 0, 0.35);
+  /* אדום התראה — להודעות שגיאה ולשדות לא תקינים */
+  --login-danger: #ff5252;
+  /* אדום שקוף — לרקע הודעת שגיאה */
+  --login-danger-faint: rgba(255, 82, 82, 0.1);
+  /* טקסט בהיר — לכותרות ולטקסט שהמפעיל מקליד */
+  --login-text-hi: #e8f5ee;
+  /* טקסט בינוני — לתוויות השדות */
+  --login-text-mid: #9fb3ab;
+  /* טקסט עמום — לטקסט עזר (placeholder) */
+  --login-text-dim: #5d6e68;
+  /* גופן מונו-ספייס — מראה של מסוף פיקוד צבאי; כל תו באותו רוחב */
+  --login-font-mono: 'Consolas', 'Cascadia Mono', 'Courier New', ui-monospace, monospace;
+  /* גופן כותרות — אותו גופן כותרות של שאר האתר, לשמירה על אחידות */
+  --login-font-head: 'Rubik', 'Heebo', sans-serif;
+/* סגירת בלוק :root */
+}
+
+
+/* ---------- 2. כפתור LOGIN בסרגל הפיקוד ---------- */
+
+/* כפתור ההתחברות בתוך הניווט; הקידומת .cmd-nav מעלה את הספציפיות מעל .nav-link של כל עמוד */
+.cmd-nav .nav-login-btn{
+  /* איפוס המראה המובנה של כפתור בדפדפן (בעיקר ב-Safari) */
+  appearance: none;
+  /* פריסה גמישה כדי למרכז את הטקסט אנכית ואופקית */
+  display: inline-flex;
+  /* מרכוז אנכי של תוכן הכפתור */
+  align-items: center;
+  /* מרכוז אופקי של תוכן הכפתור */
+  justify-content: center;
+  /* ריווח פנימי — גובה ורוחב נוחים ללחיצה */
+  padding: 7px 18px;
+  /* מרווח מהקישור האחרון בניווט — הפרדה חזותית בין ניווט לפעולה */
+  margin-inline-start: 10px;
+  /* רקע שקוף — הכפתור נראה כמסגרת HUD ולא כגוש צבע */
+  background: transparent;
+  /* גבול ירוק דק — מסמן שזה כפתור פעולה ולא קישור ניווט רגיל */
+  border: 1px solid var(--login-neon);
+  /* פינות כמעט חדות — מראה צבאי זוויתי */
+  border-radius: 3px;
+  /* טקסט בצבע ירוק טקטי */
+  color: var(--login-neon);
+  /* גופן מונו-ספייס — מראה של פקודת מסוף */
+  font-family: var(--login-font-mono);
+  /* גודל טקסט קטן ומדויק כמו תווית HUD */
+  font-size: 0.78rem;
+  /* משקל מודגש לקריאות גבוהה בסרגל */
+  font-weight: 700;
+  /* ריווח אותיות רחב — סגנון תוויות צבאיות */
+  letter-spacing: 0.18em;
+  /* גובה שורה אחיד כדי שהכפתור לא יקפוץ בגובה */
+  line-height: 1.2;
+  /* סמן יד — מסמן למשתמש שהאלמנט לחיץ */
+  cursor: pointer;
+  /* מניעת שבירת שורה בתוך המילה LOGIN */
+  white-space: nowrap;
+  /* צל זוהר עדין — הכפתור "דולק" כמו נורית מוכנות */
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.15), inset 0 0 8px rgba(0, 230, 118, 0.08);
+  /* מעבר חלק בין מצבים (ריחוף, לחיצה) במקום קפיצה חדה */
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+/* סגירת בלוק .cmd-nav .nav-login-btn */
+}
+
+/* ביטול קו התחתון המונפש שמוגדר ל-.nav-link בעמוד התחקור — לא מתאים לכפתור ממוסגר */
+.cmd-nav .nav-login-btn::after{
+  /* הסתרה מלאה של הפסאודו-אלמנט */
+  display: none;
+/* סגירת בלוק .cmd-nav .nav-login-btn::after */
+}
+
+/* מצב ריחוף על כפתור ההתחברות */
+.cmd-nav .nav-login-btn:hover{
+  /* מילוי ירוק מלא — משוב חזותי ברור שהכפתור מוכן ללחיצה */
+  background: var(--login-neon);
+  /* טקסט כהה על רקע ירוק — ניגודיות מרבית */
+  color: var(--login-bg-void);
+  /* שמירה על הגבול הירוק גם בריחוף (דורס את צבע הגבול של .nav-link:hover) */
+  border-color: var(--login-neon);
+  /* הגברת הזוהר — הכפתור "נדלק" */
+  box-shadow: 0 0 18px var(--login-neon-glow);
+/* סגירת בלוק .cmd-nav .nav-login-btn:hover */
+}
+
+/* מצב פוקוס מהמקלדת (Tab) — נגישות למפעיל שעובד בלי עכבר */
+.cmd-nav .nav-login-btn:focus-visible{
+  /* ביטול קו המתאר הברירת-מחדל של הדפדפן */
+  outline: none;
+  /* טבעת פוקוס ירוקה כפולה — ברורה גם על רקע כהה */
+  box-shadow: 0 0 0 2px var(--login-bg-void), 0 0 0 4px var(--login-neon);
+/* סגירת בלוק .cmd-nav .nav-login-btn:focus-visible */
+}
+
+/* מצב לחיצה פעילה (בזמן שהכפתור לחוץ) */
+.cmd-nav .nav-login-btn:active{
+  /* הקטנה קלה — תחושה פיזית של לחיצה על מתג */
+  transform: scale(0.96);
+  /* החלשת הזוהר — הכפתור "שוקע" */
+  box-shadow: 0 0 6px var(--login-neon-glow);
+/* סגירת בלוק .cmd-nav .nav-login-btn:active */
+}
+
+
+/* ---------- 3. שכבת הרקע (Overlay) ---------- */
+
+/* מעטפת החלון — שכבה שמכסה את כל המסך */
+.modal-overlay{
+  /* מיקום קבוע ביחס לחלון הדפדפן — לא זז בגלילה */
+  position: fixed;
+  /* מתיחה לכל ארבעת הצדדים — כיסוי מסך מלא */
+  inset: 0;
+  /* שכבה עליונה מעל סרגל הפיקוד וכל תוכן העמוד */
+  z-index: 1000;
+  /* פריסה גמישה — הדרך הפשוטה למרכז את התיבה */
+  display: flex;
+  /* מרכוז אנכי של התיבה */
+  align-items: center;
+  /* מרכוז אופקי של התיבה */
+  justify-content: center;
+  /* ריווח מהשוליים — שהתיבה לא תיגע בקצות מסך צר */
+  padding: 16px;
+  /* רקע שחור חצי-שקוף — מעמעם את העמוד שמאחור וממקד את העין בחלון */
+  background: rgba(0, 0, 0, 0.75);
+  /* טשטוש העמוד שמאחור — מנתק חזותית את המפעיל מהתוכן הלא-רלוונטי */
+  backdrop-filter: blur(6px);
+  /* אותו טשטוש עם קידומת עבור Safari */
+  -webkit-backdrop-filter: blur(6px);
+  /* גלילה פנימית אם התיבה גבוהה מהמסך (טלפון במצב אופקי) */
+  overflow-y: auto;
+  /* הנפשת הופעה הדרגתית של הרקע בפתיחה */
+  animation: login-fade-in 0.2s ease-out;
+/* סגירת בלוק .modal-overlay */
+}
+
+/* כשהתכונה hidden קיימת — חובה, כי display:flex שלמעלה דורס את ההסתרה המובנית של hidden */
+.modal-overlay[hidden]{
+  /* הסתרה מלאה של החלון עד שה-JavaScript מסיר את hidden */
+  display: none;
+/* סגירת בלוק .modal-overlay[hidden] */
+}
+
+
+/* ---------- 4. תיבת הדיאלוג ---------- */
+
+/* תיבת ההתחברות המרכזית */
+.modal-box{
+  /* מיקום יחסי — בסיס למיקום פס האזהרה העליון (::before) */
+  position: relative;
+  /* רוחב מלא עד לגבול המקסימלי — מתכווץ אוטומטית במסכים צרים */
+  width: 100%;
+  /* רוחב מקסימלי — תיבה קומפקטית וממוקדת */
+  max-width: 420px;
+  /* ריווח פנימי נדיב סביב התוכן */
+  padding: 28px 28px 30px;
+  /* רקע כהה חצי-שקוף — בסיס אפקט הזכוכית */
+  background: var(--login-bg-glass);
+  /* טשטוש נוסף בתוך התיבה — מחזק את מראה הזכוכית המעושנת */
+  backdrop-filter: blur(14px) saturate(140%);
+  /* אותו טשטוש עם קידומת עבור Safari */
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  /* גבול ירוק דק — מסגרת HUD */
+  border: 1px solid var(--login-neon-dim);
+  /* פינות מעוגלות קלות — מודרני אך עדיין טקטי */
+  border-radius: 10px;
+  /* צל עמוק להרמה מהרקע + זוהר ירוק חיצוני + זוהר פנימי עדין */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 230, 118, 0.18), inset 0 0 24px rgba(0, 230, 118, 0.05);
+  /* צבע הטקסט הבסיסי בתוך התיבה */
+  color: var(--login-text-mid);
+  /* חיתוך פס האזהרה העליון לפי הפינות המעוגלות */
+  overflow: hidden;
+  /* הנפשת כניסה — התיבה עולה מעט ומופיעה */
+  animation: login-rise-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+/* סגירת בלוק .modal-box */
+}
+
+/* פס אזהרה ענברי דק בראש התיבה — "גבול אזהרה עדין": אזור מאובטח */
+.modal-box::before{
+  /* פסאודו-אלמנט חייב תוכן (גם ריק) כדי להופיע */
+  content: "";
+  /* מיקום מוחלט ביחס לתיבה */
+  position: absolute;
+  /* צמוד לראש התיבה */
+  top: 0;
+  /* מתיחה מצד לצד */
+  inset-inline: 0;
+  /* פס דק מאוד */
+  height: 2px;
+  /* פסים אלכסוניים ענבר/שקוף — מראה סרט אזהרה צבאי */
+  background: repeating-linear-gradient(135deg, var(--login-warn-dim) 0 10px, transparent 10px 20px);
+/* סגירת בלוק .modal-box::before */
+}
+
+
+/* ---------- 5. ראש החלון ---------- */
+
+/* שורת הכותרת וכפתור הסגירה */
+.modal-header{
+  /* פריסה גמישה בשורה אחת */
+  display: flex;
+  /* יישור אנכי של הכותרת וה-X */
+  align-items: center;
+  /* הכותרת בצד אחד וה-X בצד השני */
+  justify-content: space-between;
+  /* רווח מינימלי בין הכותרת לכפתור */
+  gap: 12px;
+  /* ריווח מתחת לשורה, לפני קו ההפרדה */
+  padding-bottom: 14px;
+  /* מרווח בין ראש החלון לטופס */
+  margin-bottom: 22px;
+  /* קו הפרדה ירוק דק מתחת לכותרת */
+  border-bottom: 1px solid rgba(0, 230, 118, 0.18);
+/* סגירת בלוק .modal-header */
+}
+
+/* כותרת החלון */
+.modal-title{
+  /* גופן מונו-ספייס — כותרת בסגנון מסוף */
+  font-family: var(--login-font-mono);
+  /* גודל בינוני — בולטת אך לא צועקת */
+  font-size: 0.95rem;
+  /* משקל מודגש */
+  font-weight: 700;
+  /* ריווח אותיות רחב — תווית צבאית */
+  letter-spacing: 0.16em;
+  /* צבע ירוק טקטי */
+  color: var(--login-neon);
+  /* זוהר טקסט עדין — מראה של מסך זרחני */
+  text-shadow: 0 0 8px var(--login-neon-glow);
+  /* כיוון משמאל לימין — הטקסט באנגלית, גם כשהעמוד ב-RTL */
+  direction: ltr;
+  /* איפוס שוליים של h2 */
+  margin: 0;
+/* סגירת בלוק .modal-title */
+}
+
+/* כפתור הסגירה (X) */
+.modal-close{
+  /* איפוס המראה המובנה של כפתור */
+  appearance: none;
+  /* מניעת כיווץ הכפתור כשהכותרת ארוכה */
+  flex-shrink: 0;
+  /* פריסה גמישה למרכוז ה-X */
+  display: inline-flex;
+  /* מרכוז אנכי של ה-X */
+  align-items: center;
+  /* מרכוז אופקי של ה-X */
+  justify-content: center;
+  /* רוחב קבוע — יעד לחיצה ריבועי */
+  width: 32px;
+  /* גובה קבוע — יעד לחיצה ריבועי */
+  height: 32px;
+  /* איפוס ריווח פנימי */
+  padding: 0;
+  /* רקע שקוף במצב רגיל */
+  background: transparent;
+  /* גבול אפור-ירקרק עדין */
+  border: 1px solid rgba(159, 179, 171, 0.25);
+  /* פינות כמעט חדות */
+  border-radius: 4px;
+  /* צבע ה-X — אפור בינוני, לא מתחרה בכותרת */
+  color: var(--login-text-mid);
+  /* גודל התו × */
+  font-size: 1.3rem;
+  /* גובה שורה 1 — מרכוז מדויק של התו */
+  line-height: 1;
+  /* סמן יד — לחיץ */
+  cursor: pointer;
+  /* מעבר חלק בין מצבים */
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, transform 0.08s ease;
+/* סגירת בלוק .modal-close */
+}
+
+/* ריחוף על ה-X — צבע אדום = פעולת יציאה/ביטול */
+.modal-close:hover{
+  /* X אדום */
+  color: var(--login-danger);
+  /* גבול אדום */
+  border-color: var(--login-danger);
+  /* רקע אדום שקוף */
+  background: var(--login-danger-faint);
+/* סגירת בלוק .modal-close:hover */
+}
+
+/* פוקוס מקלדת על ה-X */
+.modal-close:focus-visible{
+  /* ביטול קו המתאר הברירת-מחדל */
+  outline: none;
+  /* טבעת פוקוס ירוקה ברורה */
+  box-shadow: 0 0 0 2px var(--login-neon);
+/* סגירת בלוק .modal-close:focus-visible */
+}
+
+/* לחיצה על ה-X */
+.modal-close:active{
+  /* הקטנה קלה — תחושת לחיצה */
+  transform: scale(0.92);
+/* סגירת בלוק .modal-close:active */
+}
+
+
+/* ---------- 6. טופס ושדות קלט ---------- */
+
+/* טופס ההתחברות */
+.modal-form{
+  /* פריסה אנכית של השדות */
+  display: flex;
+  /* כיוון עמודה — שדה מתחת לשדה */
+  flex-direction: column;
+  /* רווח אחיד בין השדות */
+  gap: 18px;
+/* סגירת בלוק .modal-form */
+}
+
+/* קבוצת תווית + שדה */
+.form-group{
+  /* פריסה אנכית */
+  display: flex;
+  /* תווית מעל השדה */
+  flex-direction: column;
+  /* רווח קטן בין התווית לשדה */
+  gap: 7px;
+/* סגירת בלוק .form-group */
+}
+
+/* תווית השדה */
+.form-label{
+  /* גופן מונו-ספייס — תווית בסגנון מסוף */
+  font-family: var(--login-font-mono);
+  /* טקסט קטן */
+  font-size: 0.72rem;
+  /* משקל בינוני */
+  font-weight: 600;
+  /* אותיות גדולות — מראה תווית צבאית */
+  text-transform: uppercase;
+  /* ריווח אותיות רחב */
+  letter-spacing: 0.14em;
+  /* צבע בינוני — פחות בולט מהטקסט המוקלד */
+  color: var(--login-text-mid);
+  /* כיוון משמאל לימין — התווית באנגלית */
+  direction: ltr;
+  /* יישור לשמאל — עקבי עם כיוון הטקסט */
+  text-align: left;
+/* סגירת בלוק .form-label */
+}
+
+/* שדה הקלט (שם משתמש וסיסמה) */
+.form-input{
+  /* איפוס המראה המובנה של שדה בדפדפן */
+  appearance: none;
+  /* רוחב מלא של התיבה */
+  width: 100%;
+  /* ריווח פנימי — שדה גבוה ונוח להקלדה */
+  padding: 11px 14px;
+  /* רקע כהה מאוד — השדה נראה "שקוע" */
+  background: var(--login-bg-input);
+  /* גבול ירוק עמום במצב רגיל */
+  border: 1px solid rgba(0, 230, 118, 0.22);
+  /* פינות מעוגלות קלות */
+  border-radius: 5px;
+  /* טקסט בהיר — המפעיל רואה בבירור מה הקליד */
+  color: var(--login-text-hi);
+  /* גופן מונו-ספייס — כל תו נפרד וברור (חשוב לקוד אבטחה) */
+  font-family: var(--login-font-mono);
+  /* גודל טקסט קריא */
+  font-size: 0.95rem;
+  /* ריווח אותיות קל — הבחנה ברורה בין תווים דומים */
+  letter-spacing: 0.06em;
+  /* גובה שורה אחיד */
+  line-height: 1.4;
+  /* כיוון משמאל לימין — אות קריאה וסיסמה נכתבות באנגלית ובמספרים */
+  direction: ltr;
+  /* יישור לשמאל — עקבי עם כיוון ההקלדה */
+  text-align: left;
+  /* צבע הסמן המהבהב — ירוק טקטי */
+  caret-color: var(--login-neon);
+  /* מעבר חלק לזוהר הפוקוס */
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+/* סגירת בלוק .form-input */
+}
+
+/* טקסט העזר בתוך השדה (אם יתווסף placeholder) */
+.form-input::placeholder{
+  /* צבע עמום — שלא יתבלבל עם טקסט אמיתי */
+  color: var(--login-text-dim);
+  /* אטימות מלאה — Firefox מעמעם placeholder כברירת מחדל */
+  opacity: 1;
+/* סגירת בלוק .form-input::placeholder */
+}
+
+/* ריחוף על השדה */
+.form-input:hover{
+  /* הבהרת הגבול — רמז שהשדה ניתן לעריכה */
+  border-color: var(--login-neon-dim);
+/* סגירת בלוק .form-input:hover */
+}
+
+/* פוקוס על השדה — המפעיל מקליד כעת */
+.form-input:focus{
+  /* ביטול קו המתאר הברירת-מחדל */
+  outline: none;
+  /* גבול ירוק מלא */
+  border-color: var(--login-neon);
+  /* זוהר ירוק חיצוני + טבעת דקה — השדה הפעיל "נדלק" */
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.15), 0 0 14px var(--login-neon-glow);
+  /* רקע כהה מוחלט — מקסימום ניגודיות בזמן הקלדה */
+  background: var(--login-bg-void);
+/* סגירת בלוק .form-input:focus */
+}
+
+/* שדה חובה שנשאר ריק אחרי שהמשתמש עזב אותו — גבול אזהרה */
+.form-input:user-invalid{
+  /* גבול ענבר — אזהרה עדינה, לא שגיאה קשה */
+  border-color: var(--login-warn);
+/* סגירת בלוק .form-input:user-invalid */
+}
+
+/* מילוי אוטומטי של הדפדפן (Chrome) — מונע רקע צהוב/תכלת שהורס את העיצוב הכהה */
+.form-input:-webkit-autofill{
+  /* צבע הטקסט נשאר בהיר */
+  -webkit-text-fill-color: var(--login-text-hi);
+  /* צל פנימי ענק בצבע הרקע — מכסה את רקע המילוי האוטומטי */
+  box-shadow: 0 0 0 1000px var(--login-bg-input) inset;
+  /* צבע הסמן נשמר */
+  caret-color: var(--login-neon);
+/* סגירת בלוק .form-input:-webkit-autofill */
+}
+
+
+/* ---------- 7. מיכל הודעות הסטטוס ---------- */
+
+/* אזור המשוב הדינמי */
+.login-status{
+  /* ריווח פנימי — ההודעה נראית כ"תג" */
+  padding: 9px 12px;
+  /* פינות מעוגלות קלות */
+  border-radius: 4px;
+  /* פס צבע בצד ההתחלה — סימון מצב בסגנון יומן מבצעי */
+  border-inline-start: 3px solid transparent;
+  /* גופן מונו-ספייס — הודעת מערכת */
+  font-family: var(--login-font-mono);
+  /* טקסט קטן */
+  font-size: 0.78rem;
+  /* ריווח אותיות קל */
+  letter-spacing: 0.06em;
+  /* גובה שורה נוח לקריאה */
+  line-height: 1.5;
+  /* צבע ברירת מחדל */
+  color: var(--login-text-mid);
+  /* איפוס שוליים של p */
+  margin: 0;
+/* סגירת בלוק .login-status */
+}
+
+/* כשהמיכל ריק — לא תופס מקום בטופס */
+.login-status:empty{
+  /* הסתרה מלאה עד שיופיע טקסט */
+  display: none;
+/* סגירת בלוק .login-status:empty */
+}
+
+/* מצב שגיאה — יתווסף ב-JavaScript כ-class="login-status is-error" */
+.login-status.is-error{
+  /* טקסט אדום */
+  color: var(--login-danger);
+  /* רקע אדום שקוף */
+  background: var(--login-danger-faint);
+  /* פס צד אדום */
+  border-inline-start-color: var(--login-danger);
+/* סגירת בלוק .login-status.is-error */
+}
+
+/* מצב בתהליך אימות — ענבר */
+.login-status.is-pending{
+  /* טקסט ענבר */
+  color: var(--login-warn);
+  /* רקע ענבר שקוף */
+  background: rgba(255, 179, 0, 0.08);
+  /* פס צד ענבר */
+  border-inline-start-color: var(--login-warn);
+/* סגירת בלוק .login-status.is-pending */
+}
+
+/* מצב הצלחה — ירוק */
+.login-status.is-success{
+  /* טקסט ירוק */
+  color: var(--login-neon);
+  /* רקע ירוק שקוף */
+  background: var(--login-neon-faint);
+  /* פס צד ירוק */
+  border-inline-start-color: var(--login-neon);
+/* סגירת בלוק .login-status.is-success */
+}
+
+
+/* ---------- 8. כפתור Sign In ---------- */
+
+/* כפתור ההתחברות; הקידומת .modal-form דורסת את .btn/.btn-primary של עמוד הבית */
+.modal-form .modal-submit{
+  /* איפוס המראה המובנה של כפתור */
+  appearance: none;
+  /* פריסה גמישה למרכוז הטקסט */
+  display: flex;
+  /* מרכוז אנכי */
+  align-items: center;
+  /* מרכוז אופקי */
+  justify-content: center;
+  /* רוחב מלא — יעד לחיצה גדול וברור */
+  width: 100%;
+  /* מרווח קטן מעל — הפרדה מהשדות */
+  margin-top: 4px;
+  /* ריווח פנימי — כפתור גבוה */
+  padding: 13px 20px;
+  /* מעבר צבע ירוק בהיר→ירוק כהה — נפח עדין */
+  background: linear-gradient(180deg, #19f08a 0%, var(--login-neon) 55%, #00c463 100%);
+  /* גבול ירוק */
+  border: 1px solid var(--login-neon);
+  /* פינות מעוגלות קלות */
+  border-radius: 5px;
+  /* טקסט כהה על ירוק — ניגודיות מרבית */
+  color: var(--login-bg-void);
+  /* גופן מונו-ספייס — פקודת HUD */
+  font-family: var(--login-font-mono);
+  /* גודל טקסט */
+  font-size: 0.88rem;
+  /* משקל מודגש מאוד */
+  font-weight: 800;
+  /* אותיות גדולות */
+  text-transform: uppercase;
+  /* ריווח אותיות רחב */
+  letter-spacing: 0.2em;
+  /* סמן יד */
+  cursor: pointer;
+  /* זוהר ירוק — הכפתור הראשי "דולק" */
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  /* מעבר חלק בין מצבים */
+  transition: box-shadow 0.18s ease, transform 0.08s ease, filter 0.18s ease;
+/* סגירת בלוק .modal-form .modal-submit */
+}
+
+/* ריחוף על Sign In */
+.modal-form .modal-submit:hover{
+  /* הבהרה קלה של כל הכפתור */
+  filter: brightness(1.08);
+  /* הגברת הזוהר */
+  box-shadow: 0 0 28px var(--login-neon-glow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  /* הרמה קלה — תחושת מוכנות */
+  transform: translateY(-1px);
+/* סגירת בלוק .modal-form .modal-submit:hover */
+}
+
+/* לחיצה על Sign In */
+.modal-form .modal-submit:active{
+  /* שקיעה למטה — תחושת לחיצה פיזית */
+  transform: translateY(1px);
+  /* החשכה קלה */
+  filter: brightness(0.92);
+  /* זוהר מוחלש וצל פנימי — הכפתור "נלחץ פנימה" */
+  box-shadow: 0 0 8px var(--login-neon-glow), inset 0 2px 6px rgba(0, 0, 0, 0.35);
+/* סגירת בלוק .modal-form .modal-submit:active */
+}
+
+/* פוקוס מקלדת על Sign In */
+.modal-form .modal-submit:focus-visible{
+  /* ביטול קו המתאר הברירת-מחדל */
+  outline: none;
+  /* טבעת כהה ואז ירוקה — נראית גם על הכפתור הירוק */
+  box-shadow: 0 0 0 2px var(--login-bg-void), 0 0 0 4px var(--login-neon), 0 0 20px var(--login-neon-glow);
+/* סגירת בלוק .modal-form .modal-submit:focus-visible */
+}
+
+/* כפתור מושבת — ל-JavaScript שינטרל אותו בזמן "אימות" */
+.modal-form .modal-submit:disabled{
+  /* סמן "המתן" — מסמן שהמערכת עובדת */
+  cursor: progress;
+  /* עמעום — הכפתור לא זמין */
+  opacity: 0.55;
+  /* ביטול הרמה/שקיעה */
+  transform: none;
+  /* ביטול ההבהרה */
+  filter: none;
+  /* ביטול הזוהר */
+  box-shadow: none;
+/* סגירת בלוק .modal-form .modal-submit:disabled */
+}
+
+
+/* ---------- 9. הנפשות ---------- */
+
+/* הנפשת הופעה הדרגתית לשכבת הרקע */
+@keyframes login-fade-in{
+  /* התחלה: נקודת הפתיחה של ההנפשה */
+  from{
+    /* שקוף לגמרי ברגע הפתיחה */
+    opacity: 0;
+  /* סגירת בלוק from */
+  }
+  /* סיום: נקודת הסיום של ההנפשה */
+  to{
+    /* נראה לגמרי בסיום ההנפשה */
+    opacity: 1;
+  /* סגירת בלוק to */
+  }
+/* סגירת בלוק @keyframes login-fade-in */
+}
+
+/* הנפשת כניסה לתיבה: עולה מלמטה ומתבהרת */
+@keyframes login-rise-in{
+  /* התחלה: נקודת הפתיחה של כניסת התיבה */
+  from{
+    /* התיבה שקופה לגמרי בפתיחה */
+    opacity: 0;
+    /* התיבה נמוכה ב-12 פיקסלים וקטנה מעט — ממנה היא "עולה" */
+    transform: translateY(12px) scale(0.98);
+  /* סגירת בלוק from */
+  }
+  /* סיום: נקודת הסיום של כניסת התיבה */
+  to{
+    /* התיבה נראית לגמרי בסיום */
+    opacity: 1;
+    /* התיבה במקומה הסופי ובגודל מלא */
+    transform: translateY(0) scale(1);
+  /* סגירת בלוק to */
+  }
+/* סגירת בלוק @keyframes login-rise-in */
+}
+
+
+/* ---------- 10. התאמות סביבה ---------- */
+
+/* דפדפן שלא תומך בטשטוש רקע — מגבירים אטימות כדי שהטקסט יישאר קריא */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  /* שכבת הרקע בלי טשטוש */
+  .modal-overlay{
+    /* רקע כהה יותר שמפצה על היעדר הטשטוש */
+    background: rgba(0, 0, 0, 0.88);
+  /* סגירת בלוק .modal-overlay */
+  }
+  /* התיבה בלי טשטוש */
+  .modal-box{
+    /* רקע כמעט אטום במקום זכוכית */
+    background: rgba(10, 13, 15, 0.97);
+  /* סגירת בלוק .modal-box */
+  }
+/* סגירת בלוק @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) */
+}
+
+/* מסכים צרים (טלפון) */
+@media (max-width: 480px){
+  /* התיבה בטלפון */
+  .modal-box{
+    /* ריווח פנימי קטן יותר — יותר מקום לשדות */
+    padding: 22px 18px 24px;
+  /* סגירת בלוק .modal-box */
+  }
+  /* הכותרת בטלפון */
+  .modal-title{
+    /* כותרת קטנה יותר כדי שתיכנס בשורה אחת ליד ה-X */
+    font-size: 0.82rem;
+    /* ריווח אותיות מצומצם */
+    letter-spacing: 0.1em;
+  /* סגירת בלוק .modal-title */
+  }
+  /* כפתור LOGIN בטלפון */
+  .cmd-nav .nav-login-btn{
+    /* ביטול המרווח הצדדי — הניווט נשבר לשורות */
+    margin-inline-start: 0;
+  /* סגירת בלוק .cmd-nav .nav-login-btn */
+  }
+/* סגירת בלוק @media (max-width: 480px) */
+}
+
+/* משתמש שביקש להפחית תנועה במערכת ההפעלה */
+@media (prefers-reduced-motion: reduce){
+  /* כל רכיבי החלון והכפתור */
+  .modal-overlay,
+  /* תיבת הדיאלוג */
+  .modal-box,
+  /* כפתור LOGIN */
+  .cmd-nav .nav-login-btn,
+  /* כפתור הסגירה */
+  .modal-close,
+  /* כפתור Sign In */
+  .modal-form .modal-submit,
+  /* שדות הקלט */
+  .form-input{
+    /* ביטול הנפשות הכניסה */
+    animation: none;
+    /* ביטול מעברי המצב */
+    transition: none;
+  /* סגירת בלוק ביטול התנועה המשותף לכל רכיבי החלון */
+  }
+/* סגירת בלוק @media (prefers-reduced-motion: reduce) */
+}

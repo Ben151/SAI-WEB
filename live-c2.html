@@ -1,0 +1,513 @@
+<!-- הצהרת סוג המסמך: מורה לדפדפן לפרש את הקובץ כ-HTML5 תקני (ולא במצב תאימות ישן) -->
+<!DOCTYPE html>
+<!-- תגית השורש של הדף: lang="he" מגדיר שפה עברית, dir="rtl" מגדיר כיוון כתיבה מימין לשמאל -->
+<html lang="he" dir="rtl">
+<!-- פתיחת ראש המסמך: מידע על הדף שאינו מוצג ישירות (קידוד, כותרת, גופנים, עיצוב) -->
+<head>
+<!-- קידוד תווים UTF-8: מאפשר הצגה תקינה של עברית ותווים מיוחדים -->
+<meta charset="UTF-8">
+<!-- התאמה למובייל: רוחב הדף שווה לרוחב המסך, ללא הגדלה ראשונית -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- כותרת הדף שמופיעה בלשונית הדפדפן -->
+<title>שו"ב מבצעי חי — SAI</title>
+<!-- חיבור מוקדם לשרת הגופנים של גוגל: מקצר את זמן טעינת הגופנים -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- חיבור מוקדם לשרת קבצי הגופנים עצמם (crossorigin נדרש לגופנים) -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- טעינת הגופנים Heebo ו-Rubik במשקלים שונים מ-Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<!-- קישור לגיליון העיצוב הייעודי של עמוד השו"ב החי -->
+<link rel="stylesheet" href="style-c2.css">
+<!-- קישור לגיליון העיצוב של חלון ההתחברות (HTML ו-CSS בלבד, ללא JavaScript) -->
+<link rel="stylesheet" href="style-login.css">
+<!-- סגירת ראש המסמך -->
+</head>
+<!-- פתיחת גוף המסמך: כל התוכן הגלוי של הדף -->
+<body>
+
+<!-- תיבת הסימון המוסתרת שמחזיקה את מצב החלון; חייבת להיות ילד ישיר של body ולפני הסרגל והחלון כדי שסלקטור ~ יעבוד -->
+<input type="checkbox" id="modal-toggle" class="modal-toggle" aria-label="פתיחה וסגירה של חלון אימות מפעיל">
+<!-- תיבת סימון מוסתרת שנייה: מצב "מחובר"; SIGN IN מסמן אותה, וה-CSS מסתיר את החלון ואת LOGIN ומציג את תג המפעיל -->
+<input type="checkbox" id="auth-state" class="auth-state" tabindex="-1" aria-hidden="true">
+
+<!-- סרגל הפיקוד העליון: כותרת האתר עם הלוגו והניווט הראשי -->
+<header class="cmd-bar">
+  <!-- אזור המיתוג: לוגו ושם המערכת -->
+  <div class="cmd-brand">
+    <!-- תמונת הלוגו של המערכת; alt מתאר את התמונה לקוראי מסך -->
+    <img src="assets/logo.png" alt="סמל SAI" class="cmd-logo">
+    <!-- מעטפת הטקסט שליד הלוגו: שם המערכת ושורת הסטטוס -->
+    <div class="cmd-brand-text">
+      <!-- שם המערכת המלא בסרגל העליון -->
+      <span class="cmd-title">SAI - מערכת מודיעין אקוסטי טקטית</span>
+      <!-- שורת סטטוס המערכת: נקודה מהבהבת וטקסט מצב -->
+      <span class="cmd-status">
+        <!-- נקודה ירוקה מהבהבת שמסמלת מערכת פעילה; aria-hidden מסתיר אותה מקוראי מסך כי היא קישוטית -->
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <!-- טקסט מצב המערכת שמוצג ליד הנקודה -->
+        מערכת מבצעית פעילה
+      <!-- סגירת שורת הסטטוס -->
+      </span>
+    <!-- סגירת מעטפת הטקסט -->
+    </div>
+    <!-- כפתור LOGIN: תווית שמקושרת לתיבת הסימון — ממוקם באזור המיתוג, משמאל ללוגו ולשם המערכת; לחיצה עליה פותחת את החלון -->
+    <label for="modal-toggle" class="nav-login-btn">
+      <!-- אייקון הפעלה קישוטי; מוסתר מקוראי מסך -->
+      <span aria-hidden="true">◉</span>
+      <!-- טקסט הכפתור -->
+      LOGIN
+    <!-- סגירת כפתור LOGIN -->
+    </label>
+    <!-- תג המפעיל המחובר: מוסתר כברירת מחדל ומוצג ב-CSS רק כש-auth-state מסומנת (אחרי SIGN IN) -->
+    <span class="operator-badge"></span>
+  <!-- סגירת אזור המיתוג -->
+  </div>
+
+  <!-- הניווט הראשי בין עמודי האתר; aria-label נותן לו שם לקוראי מסך -->
+  <nav class="cmd-nav" aria-label="ניווט ראשי">
+    <!-- קישור לעמוד סקירת המערכת -->
+    <a href="index.html" class="nav-link">סקירת מערכת</a>
+    <!-- קישור לעמוד הוראות ההפעלה ללוחם -->
+    <a href="field-manual.html" class="nav-link">הוראות הפעלה ללוחם</a>
+    <!-- קישור לעמוד השו"ב החי; active ו-aria-current מסמנים שזה העמוד הנוכחי -->
+    <a href="live-c2.html" class="nav-link active" aria-current="page">
+      <!-- טקסט הקישור -->
+      שו"ב מבצעי חי
+      <!-- תג "LIVE C2" עם נקודה מהבהבת שמדגיש שהעמוד מציג נתונים בזמן אמת -->
+      <span class="live-badge"><span class="live-dot" aria-hidden="true"></span>LIVE C2</span>
+    <!-- סגירת קישור השו"ב החי -->
+    </a>
+    <!-- קישור לעמוד התחקור ויומן האירועים -->
+    <a href="debrief.html" class="nav-link">תחקור ויומן אירועים</a>
+  <!-- סגירת הניווט הראשי -->
+  </nav>
+<!-- סגירת סרגל הפיקוד העליון -->
+</header>
+
+<!-- פס התרעה רץ מתחת לסרגל העליון; role="alert" גורם לקוראי מסך להקריא אותו מיד -->
+<div class="alert-ticker" role="alert">
+  <!-- דגל "התרעה" קבוע בצד הפס -->
+  <span class="ticker-flag">⚠ התרעה</span>
+  <!-- מסילת הטקסט הנע (מונפשת ב-CSS) -->
+  <div class="ticker-track">
+    <!-- טקסט ההתרעה: סוג האיום, ודאות, גזרה וכוחות בסיכון; &nbsp; יוצרים רווחים קבועים -->
+    <span class="ticker-text">התרעת איום מתפרצת: רחפן תקיפה זוהה&nbsp;|&nbsp;רמת ודאות: 96%&nbsp;|&nbsp;גזרה: 045° צפון-מזרח&nbsp;|&nbsp;כוחות בסיכון: אלפא 1, אלפא 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <!-- עותק זהה של הטקסט ליצירת גלילה רציפה ללא קפיצה; מוסתר מקוראי מסך כדי שלא יוקרא פעמיים -->
+    <span class="ticker-text" aria-hidden="true">התרעת איום מתפרצת: רחפן תקיפה זוהה&nbsp;|&nbsp;רמת ודאות: 96%&nbsp;|&nbsp;גזרה: 045° צפון-מזרח&nbsp;|&nbsp;כוחות בסיכון: אלפא 1, אלפא 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <!-- סגירת מסילת הטקסט -->
+  </div>
+<!-- סגירת פס ההתרעה -->
+</div>
+
+<!-- לוח הבקרה המרכזי: שלושה פאנלים (כוחות, מפה, רטט) -->
+<main class="dashboard">
+
+  <!-- ===== פאנל מצב כוחות וסנסורים (FORCE TELEMETRY SIDEBAR) ===== -->
+  <section class="panel telemetry-panel" aria-label="פאנל מצב כוחות וסנסורים">
+    <!-- ראש הפאנל: תווית וכותרת -->
+    <div class="panel-head">
+      <!-- תווית טכנית קטנה מעל כותרת הפאנל -->
+      <span class="panel-kicker">FORCE STATUS</span>
+      <!-- כותרת הפאנל -->
+      <h2 class="panel-title">מצב כוחות וסנסורים</h2>
+    <!-- סגירת ראש הפאנל -->
+    </div>
+
+    <!-- כרטיס כוח אלפא 1; force-card--risk צובע אותו כבסיכון -->
+    <article class="force-card force-card--risk">
+      <!-- ראש הכרטיס: נקודת מצב, שם הכוח ותג סיכון -->
+      <div class="force-head">
+        <!-- נקודת מצב צבעונית; קישוטית -->
+        <span class="force-status-dot" aria-hidden="true"></span>
+        <!-- שם הכוח -->
+        <h3 class="force-id">אלפא 1</h3>
+        <!-- תג מצב הסיכון -->
+        <span class="force-risk">בסיכון</span>
+      <!-- סגירת ראש הכרטיס -->
+      </div>
+
+      <!-- שורת נתון: מצב סוללה -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">סוללה</span>
+        <!-- פס סוללה; המילוי הפנימי ברוחב 82% מייצג את רמת הטעינה -->
+        <div class="battery-bar"><div class="battery-fill battery-high" style="width:82%;"></div></div>
+        <!-- ערך הסוללה במספרים -->
+        <span class="force-value">82%</span>
+      <!-- סגירת שורת הסוללה -->
+      </div>
+
+      <!-- שורת נתון: איכות קישור הקשר -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">קישור קשר</span>
+        <!-- מחוון עוצמת אות (פסים); קישוטי כי הערך מופיע גם בטקסט -->
+        <div class="signal-bars" aria-hidden="true">
+          <!-- ארבעה פסי אות, כולם דולקים (on) — קליטה מלאה -->
+          <span class="bar bar-1 on"></span><span class="bar bar-2 on"></span><span class="bar bar-3 on"></span><span class="bar bar-4 on"></span>
+        <!-- סגירת מחוון האות -->
+        </div>
+        <!-- מצב הקישור בטקסט -->
+        <span class="force-value">מקוון</span>
+      <!-- סגירת שורת הקשר -->
+      </div>
+
+      <!-- שורת נתון: מצב חיישן ה-TinyML -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">חיישן TinyML</span>
+        <!-- תג מצב החיישן: זיהוי פעיל -->
+        <span class="sensor-badge sensor-active">זיהוי פעיל</span>
+      <!-- סגירת שורת החיישן -->
+      </div>
+    <!-- סגירת כרטיס אלפא 1 -->
+    </article>
+
+    <!-- כרטיס כוח אלפא 2; force-card--risk צובע אותו כבסיכון -->
+    <article class="force-card force-card--risk">
+      <!-- ראש הכרטיס: נקודת מצב, שם הכוח ותג סיכון -->
+      <div class="force-head">
+        <!-- נקודת מצב צבעונית; קישוטית -->
+        <span class="force-status-dot" aria-hidden="true"></span>
+        <!-- שם הכוח -->
+        <h3 class="force-id">אלפא 2</h3>
+        <!-- תג מצב הסיכון -->
+        <span class="force-risk">בסיכון</span>
+      <!-- סגירת ראש הכרטיס -->
+      </div>
+
+      <!-- שורת נתון: מצב סוללה -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">סוללה</span>
+        <!-- פס סוללה בינוני (battery-mid); המילוי ברוחב 54% -->
+        <div class="battery-bar"><div class="battery-fill battery-mid" style="width:54%;"></div></div>
+        <!-- ערך הסוללה במספרים -->
+        <span class="force-value">54%</span>
+      <!-- סגירת שורת הסוללה -->
+      </div>
+
+      <!-- שורת נתון: איכות קישור הקשר -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">קישור קשר</span>
+        <!-- מחוון עוצמת אות (פסים); קישוטי כי הערך מופיע גם בטקסט -->
+        <div class="signal-bars" aria-hidden="true">
+          <!-- שלושה פסים דולקים והרביעי כבוי — קליטה חלשה יותר -->
+          <span class="bar bar-1 on"></span><span class="bar bar-2 on"></span><span class="bar bar-3 on"></span><span class="bar bar-4"></span>
+        <!-- סגירת מחוון האות -->
+        </div>
+        <!-- מצב הקישור בטקסט, בצבע אזהרה (force-value--warn) -->
+        <span class="force-value force-value--warn">מקוון · חלש</span>
+      <!-- סגירת שורת הקשר -->
+      </div>
+
+      <!-- שורת נתון: מצב חיישן ה-TinyML -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">חיישן TinyML</span>
+        <!-- תג מצב החיישן: זיהוי פעיל -->
+        <span class="sensor-badge sensor-active">זיהוי פעיל</span>
+      <!-- סגירת שורת החיישן -->
+      </div>
+    <!-- סגירת כרטיס אלפא 2 -->
+    </article>
+
+    <!-- כרטיס כוח ברבו 1 (ללא סיכון) -->
+    <article class="force-card">
+      <!-- ראש הכרטיס: נקודת מצב, שם הכוח ותג סיכון -->
+      <div class="force-head">
+        <!-- נקודת מצב צבעונית; קישוטית -->
+        <span class="force-status-dot" aria-hidden="true"></span>
+        <!-- שם הכוח -->
+        <h3 class="force-id">ברבו 1</h3>
+        <!-- תג "ללא סיכון" בצבע רגוע (force-risk--clear) -->
+        <span class="force-risk force-risk--clear">ללא סיכון</span>
+      <!-- סגירת ראש הכרטיס -->
+      </div>
+
+      <!-- שורת נתון: מצב סוללה -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">סוללה</span>
+        <!-- פס סוללה; המילוי ברוחב 91% -->
+        <div class="battery-bar"><div class="battery-fill battery-high" style="width:91%;"></div></div>
+        <!-- ערך הסוללה במספרים -->
+        <span class="force-value">91%</span>
+      <!-- סגירת שורת הסוללה -->
+      </div>
+
+      <!-- שורת נתון: איכות קישור הקשר -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">קישור קשר</span>
+        <!-- מחוון עוצמת אות (פסים); קישוטי כי הערך מופיע גם בטקסט -->
+        <div class="signal-bars" aria-hidden="true">
+          <!-- ארבעה פסי אות, כולם דולקים — קליטה מלאה -->
+          <span class="bar bar-1 on"></span><span class="bar bar-2 on"></span><span class="bar bar-3 on"></span><span class="bar bar-4 on"></span>
+        <!-- סגירת מחוון האות -->
+        </div>
+        <!-- מצב הקישור בטקסט -->
+        <span class="force-value">מקוון</span>
+      <!-- סגירת שורת הקשר -->
+      </div>
+
+      <!-- שורת נתון: מצב חיישן ה-TinyML -->
+      <div class="force-row">
+        <!-- שם הנתון -->
+        <span class="force-label">חיישן TinyML</span>
+        <!-- תג מצב החיישן: האזנה שקטה (אין זיהוי) -->
+        <span class="sensor-badge sensor-idle">האזנה שקטה</span>
+      <!-- סגירת שורת החיישן -->
+      </div>
+    <!-- סגירת כרטיס ברבו 1 -->
+    </article>
+  <!-- סגירת פאנל מצב הכוחות -->
+  </section>
+
+  <!-- ===== פאנל המפה הטקטית המרכזית (CENTRAL TACTICAL MAP) ===== -->
+  <section class="panel map-panel" aria-label="מפה טקטית מרכזית">
+    <!-- ראש הפאנל: תווית וכותרת -->
+    <div class="panel-head map-head">
+      <!-- תווית טכנית: מערכת GIS וגזרה 7 -->
+      <span class="panel-kicker">TACTICAL GIS // SECTOR 7</span>
+      <!-- כותרת הפאנל -->
+      <h2 class="panel-title">מפה טקטית — זמן אמת</h2>
+    <!-- סגירת ראש הפאנל -->
+    </div>
+
+    <!-- חלון המפה: בסיס למיקום כל הסמנים והשכבות -->
+    <div class="map-viewport">
+      <!-- רשת קווי קואורדינטות ברקע המפה; קישוטית -->
+      <div class="map-grid" aria-hidden="true"></div>
+
+      <!-- מכ"ם מרכזי מונפש; קישוטי -->
+      <div class="radar-core" aria-hidden="true">
+        <!-- טבעת מכ"ם פנימית -->
+        <span class="radar-ring ring-1"></span>
+        <!-- טבעת מכ"ם אמצעית -->
+        <span class="radar-ring ring-2"></span>
+        <!-- טבעת מכ"ם חיצונית -->
+        <span class="radar-ring ring-3"></span>
+        <!-- קרן הסריקה המסתובבת של המכ"ם -->
+        <span class="radar-sweep"></span>
+      <!-- סגירת המכ"ם -->
+      </div>
+
+      <!-- תווית כיוון: צפון (ראש המפה) -->
+      <span class="compass-label compass-n">צפון</span>
+      <!-- תווית כיוון: דרום (תחתית המפה) -->
+      <span class="compass-label compass-s">דרום</span>
+      <!-- תווית כיוון: מזרח -->
+      <span class="compass-label compass-e">מזרח</span>
+      <!-- תווית כיוון: מערב -->
+      <span class="compass-label compass-w">מערב</span>
+
+      <!-- קו וקטור האיום: מהרחפן אל ריכוז הכוחות -->
+      <div class="vector-line"></div>
+
+      <!-- פינג אקוסטי (מפת חום) שממורכז על מיקום האיום; style קובע את מיקומו במפה -->
+      <div class="acoustic-ping" style="top:22%; left:72%;">
+        <!-- גל פינג ראשון המתרחב -->
+        <span class="ping-ring p1"></span>
+        <!-- גל פינג שני המתרחב (מושהה) -->
+        <span class="ping-ring p2"></span>
+        <!-- גל פינג שלישי המתרחב (מושהה יותר) -->
+        <span class="ping-ring p3"></span>
+      <!-- סגירת הפינג האקוסטי -->
+      </div>
+
+      <!-- סמן הרחפן העוין, באותו מיקום של הפינג -->
+      <div class="marker marker-hostile" style="top:22%; left:72%;">
+        <!-- אייקון כלי טיס; קישוטי -->
+        <span class="hostile-icon" aria-hidden="true">✈</span>
+        <!-- תווית טקסט ליד הסמן -->
+        <span class="marker-chip chip-hostile">רחפן עוין · לא מזוהה</span>
+      <!-- סגירת סמן הרחפן -->
+      </div>
+
+      <!-- סמן כוח ידידותי: ברבו 1 -->
+      <div class="marker marker-friendly" style="top:38%; left:22%;">
+        <!-- אייקון כוח ידידותי; קישוטי -->
+        <span class="friendly-icon" aria-hidden="true"></span>
+        <!-- שם הכוח ליד הסמן -->
+        <span class="marker-chip">ברבו 1</span>
+      <!-- סגירת סמן ברבו 1 -->
+      </div>
+
+      <!-- סמן כוח ידידותי בסיכון: אלפא 1 -->
+      <div class="marker marker-friendly marker-friendly--risk" style="top:58%; left:40%;">
+        <!-- אייקון כוח ידידותי; קישוטי -->
+        <span class="friendly-icon" aria-hidden="true"></span>
+        <!-- שם הכוח בצבע סיכון -->
+        <span class="marker-chip chip-risk">אלפא 1</span>
+      <!-- סגירת סמן אלפא 1 -->
+      </div>
+
+      <!-- סמן כוח ידידותי בסיכון: אלפא 2 -->
+      <div class="marker marker-friendly marker-friendly--risk" style="top:63%; left:47%;">
+        <!-- אייקון כוח ידידותי; קישוטי -->
+        <span class="friendly-icon" aria-hidden="true"></span>
+        <!-- שם הכוח בצבע סיכון -->
+        <span class="marker-chip chip-risk">אלפא 2</span>
+      <!-- סגירת סמן אלפא 2 -->
+      </div>
+
+      <!-- חלונית "נעילת מטרה": פרטי האיום המזוהה -->
+      <div class="target-lock" aria-hidden="true">
+        <!-- שורה: סוג היעד -->
+        <div class="lock-row"><span>סוג יעד</span><strong>רחפן תקיפה</strong></div>
+        <!-- שורה: ודאות הסיווג, בצבע חם (lock-hot) -->
+        <div class="lock-row"><span>ודאות סיווג</span><strong class="lock-hot">96%</strong></div>
+        <!-- שורה: גזרת האיום -->
+        <div class="lock-row"><span>גזרה</span><strong>045° צפון-מזרח</strong></div>
+        <!-- שורה: טווח משוער לאיום -->
+        <div class="lock-row"><span>טווח משוער</span><strong>1.4 ק"מ</strong></div>
+        <!-- שורה: מגמת תנועה, בצבע חם (lock-hot) -->
+        <div class="lock-row"><span>מגמה</span><strong class="lock-hot">מתקרב</strong></div>
+      <!-- סגירת חלונית נעילת המטרה -->
+      </div>
+
+      <!-- מקרא המפה -->
+      <div class="map-legend" aria-hidden="true">
+        <!-- פריט מקרא: ריבוע צבע וטקסט "כוח ידידותי" -->
+        <span><i class="legend-swatch legend-friendly"></i>כוח ידידותי</span>
+        <!-- פריט מקרא: ריבוע צבע וטקסט "איום עוין" -->
+        <span><i class="legend-swatch legend-hostile"></i>איום עוין</span>
+        <!-- פריט מקרא: ריבוע צבע וטקסט "זיהוי אקוסטי" -->
+        <span><i class="legend-swatch legend-ping"></i>זיהוי אקוסטי</span>
+      <!-- סגירת המקרא -->
+      </div>
+    <!-- סגירת חלון המפה -->
+    </div>
+  <!-- סגירת פאנל המפה -->
+  </section>
+
+  <!-- ===== פאנל מדמה חיווי הרטט (HAPTIC FEEDBACK VISUALIZER) ===== -->
+  <section class="panel haptic-panel" aria-label="מדמה משוב הפטי">
+    <!-- ראש הפאנל: תווית וכותרת -->
+    <div class="panel-head">
+      <!-- תווית טכנית קטנה מעל כותרת הפאנל -->
+      <span class="panel-kicker">HAPTIC MIRROR</span>
+      <!-- כותרת הפאנל: איזה לוחם מוצג -->
+      <h2 class="panel-title">מדמה חיווי רטט — אלפא 1</h2>
+    <!-- סגירת ראש הפאנל -->
+    </div>
+
+    <!-- איור האפוד: גוף וכתפיים -->
+    <div class="vest-mockup">
+      <!-- גוף האפוד -->
+      <div class="vest-body">
+        <!-- הליבה במרכז האפוד (מארז הבקר); קישוטית -->
+        <div class="vest-core" aria-hidden="true">
+          <!-- טבעת מהבהבת סביב הליבה -->
+          <span class="vest-core-ring"></span>
+        <!-- סגירת הליבה -->
+        </div>
+      <!-- סגירת גוף האפוד -->
+      </div>
+      <!-- כתף שמאל — כבויה -->
+      <div class="vest-shoulder shoulder-left">
+        <!-- נקודת מנוע הרטט; קישוטית -->
+        <span class="shoulder-dot" aria-hidden="true"></span>
+      <!-- סגירת כתף שמאל -->
+      </div>
+      <!-- כתף ימין — פעילה (shoulder-active) -->
+      <div class="vest-shoulder shoulder-right shoulder-active">
+        <!-- נקודת מנוע הרטט; קישוטית -->
+        <span class="shoulder-dot" aria-hidden="true"></span>
+        <!-- גל פעימה ראשון סביב הכתף הפעילה -->
+        <span class="shoulder-pulse p1" aria-hidden="true"></span>
+        <!-- גל פעימה שני (מושהה) סביב הכתף הפעילה -->
+        <span class="shoulder-pulse p2" aria-hidden="true"></span>
+      <!-- סגירת כתף ימין -->
+      </div>
+    <!-- סגירת איור האפוד -->
+    </div>
+
+    <!-- קריאת מצב הרטט בטקסט -->
+    <div class="haptic-readout">
+      <!-- שורת מצב כתף ימין — פעילה -->
+      <div class="haptic-row haptic-row--active">
+        <!-- נקודת מצב דולקת; קישוטית -->
+        <span class="haptic-dot" aria-hidden="true"></span>
+        <!-- טקסט מצב כתף ימין -->
+        כתף ימין — רטט פעיל
+      <!-- סגירת שורת כתף ימין -->
+      </div>
+      <!-- שורת מצב כתף שמאל — כבויה -->
+      <div class="haptic-row haptic-row--idle">
+        <!-- נקודת מצב כבויה (off); קישוטית -->
+        <span class="haptic-dot off" aria-hidden="true"></span>
+        <!-- טקסט מצב כתף שמאל -->
+        כתף שמאל — כבוי
+      <!-- סגירת שורת כתף שמאל -->
+      </div>
+      <!-- הערת הסבר: מה פירוש דפוס הרטט הנוכחי -->
+      <p class="haptic-note">דפוס רטט בודד בכתף ימין תואם איום מזוהה בגזרה 045° (צפון-מזרח), בהתאם לנוהל ההתרעה.</p>
+    <!-- סגירת קריאת המצב -->
+    </div>
+  <!-- סגירת פאנל הרטט -->
+  </section>
+
+<!-- סגירת לוח הבקרה -->
+</main>
+
+<!-- כותרת תחתונה של הדף: שם המערכת והערת סיווג -->
+<footer class="cmd-footer">
+  <!-- שם המערכת המלא באנגלית -->
+  <span>SAI // STENTOR ACOUSTIC INTELLIGENCE SYSTEM</span>
+  <!-- נקודת הפרדה חזותית בין שני הטקסטים -->
+  <span class="footer-dot">•</span>
+  <!-- הערת סיווג: ערוץ מוצפן ושימוש מוסמך בלבד -->
+  <span>ערוץ מוצפן · שימוש מבצעי מוסמך בלבד</span>
+<!-- סגירת הכותרת התחתונה -->
+</footer>
+
+<!-- מעטפת החלון: מוסתרת ב-CSS, ומוצגת רק כשתיבת הסימון מסומנת -->
+<div class="modal-overlay">
+  <!-- רקע מטושטש לחיץ: תווית שמכסה את כל המסך — לחיצה עליה מבטלת את הסימון וסוגרת את החלון -->
+  <label for="modal-toggle" class="modal-backdrop" aria-hidden="true"></label>
+  <!-- תיבת הדיאלוג עצמה; role ו-aria-modal מסמנים אותה כחלון דו-שיח, aria-labelledby מקשר לכותרת -->
+  <section class="modal-box" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <!-- ראש החלון: כותרת וכפתור סגירה באותה שורה -->
+    <header class="modal-header">
+      <!-- כותרת החלון -->
+      <h2 id="login-modal-title" class="modal-title">OPERATOR AUTHENTICATION</h2>
+      <!-- כפתור הסגירה ✕: תווית שמבטלת את סימון התיבה וכך סוגרת את החלון -->
+      <label for="modal-toggle" class="modal-close" title="Close" aria-label="Close">✕</label>
+    <!-- סגירת ראש החלון -->
+    </header>
+    <!-- טופס ההתחברות: אין בו כפתור submit, ולכן Enter לא שולח אותו והדף לא נטען מחדש -->
+    <form class="modal-form" autocomplete="off">
+      <!-- קבוצת השדה של אות הקריאה -->
+      <div class="form-group">
+        <!-- תווית השדה; for מקשר אותה לשדה -->
+        <label for="login-username" class="form-label">Callsign / Operator ID</label>
+        <!-- שדה אות הקריאה; required הופך את הטופס ל-:invalid כל עוד השדה ריק -->
+        <input type="text" id="login-username" name="username" class="form-input" required spellcheck="false" placeholder="ALPHA-1">
+      <!-- סגירת קבוצת השדה של אות הקריאה -->
+      </div>
+      <!-- קבוצת השדה של קוד האבטחה -->
+      <div class="form-group">
+        <!-- תווית השדה; for מקשר אותה לשדה -->
+        <label for="login-password" class="form-label">Security Passcode</label>
+        <!-- שדה הסיסמה; type="password" מסתיר את התווים, required נדרש לבדיקת התקינות ב-CSS -->
+        <input type="password" id="login-password" name="password" class="form-input" required placeholder="••••••••">
+      <!-- סגירת קבוצת השדה של קוד האבטחה -->
+      </div>
+      <!-- שורת סטטוס: הטקסט שלה נוצר ב-CSS (ממתין / מוכן) לפי תקינות הטופס -->
+      <p class="login-status"></p>
+      <!-- כפתור SIGN IN מדומה: תווית שמסמנת את auth-state — החלון נסגר ומצב "מחובר" נדלק; מנוטרל ב-CSS עד ששני השדות מלאים -->
+      <label for="auth-state" class="modal-submit">SIGN IN</label>
+    <!-- סגירת טופס ההתחברות -->
+    </form>
+  <!-- סגירת תיבת הדיאלוג -->
+  </section>
+<!-- סגירת מעטפת החלון -->
+</div>
+
+<!-- סגירת גוף המסמך -->
+</body>
+<!-- סגירת תגית השורש של הדף -->
+</html>

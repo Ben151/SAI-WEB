@@ -1,0 +1,479 @@
+<!-- קובץ זה הוא עמוד "תחקור ויומן אירועים" (Debrief & After Action Report) של מערכת SAI.
+     הוא עמוד עצמאי לחלוטין: בלי JavaScript, רק HTML5 סמנטי + CSS3 טהור (ראו style-debrief.css).
+     כל האינטראקטיביות (ציר הזמן, הסליידרים, הטוגל) מושגת באמצעות רכיבי טופס דפדפניים
+     מובנים (radio/range/checkbox) יחד עם סלקטורי CSS חכמים — ללא שורת קוד JS אחת. -->
+<!-- DOCTYPE HTML5: מודיע לדפדפן לרנדר את הדף לפי תקן HTML5 העדכני (Standards Mode),
+     ולא במצב "Quirks" תואם-לאחור שיכול לשבש חישובי CSS כמו box-sizing -->
+<!DOCTYPE html>
+<!-- lang="he": מגדיר את שפת התוכן כעברית — חשוב לנגישות (קוראי מסך יבטאו נכון),
+     ולמנועי חיפוש/דפדפנים שמציעים תרגום אוטומטי.
+     dir="rtl": קובע כיוון כתיבה מימין-לשמאל לכל העמוד — משפיע אוטומטית על יישור טקסט,
+     סדר פריסת Flexbox/Grid (איבר ראשון ב-HTML מוצג מימין), ומיקום של תכונות לוגיות כמו
+     border-inline-start ב-CSS, כך שאין צורך לכתוב ידנית "right" בכל מקום -->
+<html lang="he" dir="rtl">
+<head>
+<!-- קידוד תווים UTF-8 הכרחי כדי שתווי עברית, גרשיים (״) וסימני מעלות (°) יוצגו נכון -->
+<meta charset="UTF-8">
+<!-- meta viewport: מבטיח שבמכשירים ניידים הדף יוצג ברוחב האמיתי של המסך (לא מוקטן/מוגדל
+     אוטומטית), כך שהפריסה הרספונסיבית שב-CSS (ה-media queries) תעבוד כמתוכנן -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- כותרת הלשונית בדפדפן — מזהה את העמוד הספציפי הזה (תחקור) מתוך שאר עמודי המערכת -->
+<title>תחקור ויומן אירועים — SAI</title>
+<!-- preconnect: מורה לדפדפן לפתוח מראש חיבור רשת (DNS+TLS) לשרתי Google Fonts,
+     לפני שה-CSS בפועל מבקש את קובצי הגופן — מקצר את זמן הטעינה הנתפס -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- טוען את משפחות הגופנים Heebo ו-Rubik במשקלים שונים (300 עד 900) — שתיהן גופני
+     עברית מודרניים התומכים היטב ב-RTL, בהם משתמש style-debrief.css להיררכיית הטקסט -->
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<!-- קישור לגיליון הסגנונות הייעודי לעמוד זה בלבד — כל עמוד באתר SAI טוען קובץ CSS
+     נפרד משלו (ולא קובץ אחד משותף), כך שניתן לפתח/לשנות עמוד בלי להשפיע על האחרים -->
+<link rel="stylesheet" href="style-debrief.css">
+<!-- קישור לגיליון העיצוב של חלון ההתחברות (HTML ו-CSS בלבד, ללא JavaScript) -->
+<link rel="stylesheet" href="style-login.css">
+</head>
+<body>
+
+<!-- תיבת הסימון המוסתרת שמחזיקה את מצב החלון; חייבת להיות ילד ישיר של body ולפני הסרגל והחלון כדי שסלקטור ~ יעבוד -->
+<input type="checkbox" id="modal-toggle" class="modal-toggle" aria-label="פתיחה וסגירה של חלון אימות מפעיל">
+<!-- תיבת סימון מוסתרת שנייה: מצב "מחובר"; SIGN IN מסמן אותה, וה-CSS מסתיר את החלון ואת LOGIN ומציג את תג המפעיל -->
+<input type="checkbox" id="auth-state" class="auth-state" tabindex="-1" aria-hidden="true">
+
+<!-- ===================== סרגל ניווט עליון (Header) =====================
+     מופיע בזהה (עם שינוי הקישור הפעיל) בכל עמודי האתר — משמש כ"תא מצפן" קבוע
+     שמאפשר מעבר מהיר בין מודולי המערכת מכל מקום בממשק -->
+<header class="cmd-bar">
+  <!-- קבוצת המותג: לוגו + שם המערכת + חיווי סטטוס חי, בצד ההתחלה של הסרגל (ימין ב-RTL) -->
+  <div class="cmd-brand">
+    <!-- לוגו המערכת מתוך assets/logo.png; תכונת alt מספקת טקסט חלופי לקוראי מסך
+         ולמקרה שהתמונה לא נטענת — חיונית לנגישות ולא רק "תיאור" -->
+    <img src="assets/logo.png" alt="סמל SAI" class="cmd-logo">
+    <div class="cmd-brand-text">
+      <!-- שם המערכת המלא -->
+      <span class="cmd-title">SAI - מערכת מודיעין אקוסטי טקטית</span>
+      <!-- חיווי "מערכת מבצעית פעילה": נקודה ירוקה פועמת (מוגדרת ב-CSS עם aria-hidden
+           כי היא עיצובית בלבד ואינה נושאת מידע טקסטואלי) + טקסט הסבר -->
+      <span class="cmd-status">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        מערכת מבצעית פעילה
+      </span>
+    </div>
+    <!-- כפתור LOGIN: תווית שמקושרת לתיבת הסימון — ממוקם באזור המיתוג, משמאל ללוגו ולשם המערכת; לחיצה עליה פותחת את החלון -->
+    <label for="modal-toggle" class="nav-login-btn">
+      <!-- אייקון הפעלה קישוטי; מוסתר מקוראי מסך -->
+      <span aria-hidden="true">◉</span>
+      <!-- טקסט הכפתור -->
+      LOGIN
+    <!-- סגירת כפתור LOGIN -->
+    </label>
+    <!-- תג המפעיל המחובר: מוסתר כברירת מחדל ומוצג ב-CSS רק כש-auth-state מסומנת (אחרי SIGN IN) -->
+    <span class="operator-badge"></span>
+  </div>
+
+  <!-- ניווט ראשי: aria-label מספק לקוראי מסך שם ברור ל-<nav> הזה (יש לעיתים כמה
+       אזורי ניווט בעמוד, וה-label מבדיל ביניהם) -->
+  <nav class="cmd-nav" aria-label="ניווט ראשי">
+    <!-- קישור לעמוד סקירת המערכת (הבית) -->
+    <a href="index.html" class="nav-link">סקירת מערכת</a>
+    <!-- קישור להוראות ההפעלה השדתיות ללוחם -->
+    <a href="field-manual.html" class="nav-link">הוראות הפעלה ללוחם</a>
+    <!-- קישור ללוח הבקרה המבצעי החי (שו"ב) -->
+    <a href="live-c2.html" class="nav-link">שו"ב מבצעי חי</a>
+    <!-- קישור לעמוד הנוכחי (תחקור): class="active" מסמן ויזואלית היכן אנחנו נמצאים,
+         aria-current="page" מודיע לטכנולוגיות מסייעות (קוראי מסך) שזהו העמוד הנוכחי —
+         שילוב של סימון ויזואלי וסמנטי-נגיש יחד -->
+    <a href="debrief.html" class="nav-link active" aria-current="page">תחקור ויומן אירועים</a>
+  </nav>
+</header>
+
+<!-- <main>: התגית הסמנטית המציינת את תוכן הליבה הייחודי של העמוד (בניגוד ל-header/footer
+     שחוזרים בכל עמוד) — חשובה לנגישות (קורא מסך יכול "לקפוץ" ישר לתוכן הראשי) ול-SEO -->
+<main>
+
+  <!-- ===================== כותרת ייצוא (Export Header) =====================
+       אזור פתיחה המציג את כותרת הדוח ומאפשר "ייצוא" שלו לקובץ PDF (מדומה) -->
+  <section class="export-header">
+    <div class="export-text">
+      <!-- תג מסמך בסגנון צבאי: AAR = After Action Report, מזהה את סוג המסמך -->
+      <span class="doc-tag">AAR // MISSION DEBRIEF</span>
+      <!-- כותרת <h1> יחידה בעמוד — הכותרת הראשית וההיררכית ביותר, חשובה גם ל-SEO
+           וגם לנגישות (קורא מסך מתחיל מכאן את מבנה הכותרות של הדף) -->
+      <h1 class="page-title">תחקור ויומן אירועים מבצעי</h1>
+      <p class="page-desc">ניתוח שלב-אחר-שלב של אירועי המשימה, ביצועי הסיווג בקצה, וכיול פרמטרי המערכת לקראת פעילות הבאה.</p>
+    </div>
+    <!-- כפתור "ייצוא דוח": href="#" כי זהו מוקאפ (mockup) ללא backend אמיתי בשלב זה;
+         role="button" מבהיר לטכנולוגיות מסייעות שמדובר בפעולה (לא ניווט רגיל לעמוד אחר),
+         למרות שמבחינה טכנית זהו תג <a> ולא <button> -->
+    <a href="#" class="btn-export" role="button">
+      <!-- אייקון חץ ייצוא; aria-hidden מסתיר אותו מקוראי מסך כי הוא דקורטיבי בלבד
+           והמשמעות כבר מועברת על ידי הטקסט הסמוך "ייצוא דוח..." -->
+      <span class="export-icon" aria-hidden="true">⭳</span>
+      ייצוא דוח תחקור מבצעי (PDF)
+    </a>
+  </section>
+
+  <!-- ===================== סעיף 1: יומן אירועי משימה (Event Log) =====================
+       טבלה המדמה תוצאת שאילתה מ-DynamoDB — רשומות זיהוי מוצלבות ממספר חיישנים -->
+  <section class="section">
+    <div class="section-head">
+      <!-- "תג טכני" עליון המרמז על מקור הנתונים (שאילתת DynamoDB) -->
+      <span class="section-kicker">DYNAMODB QUERY // EVENT LOG</span>
+      <!-- כותרת <h2>: רמת היררכיה אחת מתחת ל-<h1> הראשי של העמוד -->
+      <h2 class="section-title">יומן אירועי משימה</h2>
+      <p class="section-sub">רשומות מוצלבות ממספר חיישנים, מסודרות לפי חותמת זמן יורדת.</p>
+    </div>
+
+    <!-- רשת נתונים ללא מסגרות: קווי הפרדה דקים בלבד בין שורות -->
+    <!-- ^ (הערה מקורית) — עוטף את הטבלה ב-div עם overflow-x:auto כדי לאפשר גלילה
+         אופקית במסכים צרים, מבלי לשבור את פריסת שאר העמוד -->
+    <div class="table-scroll">
+      <!-- <table> סמנטית אמיתית (לא div מדומה) — חשוב לנגישות ולקריאת נתונים טבלאיים
+           נכונה על ידי קוראי מסך, שיכולים לנווט בין עמודות/שורות -->
+      <table class="log-table">
+        <!-- <thead>: כותרות העמודות, מופרדות סמנטית מגוף הנתונים (tbody) -->
+        <thead>
+          <tr>
+            <!-- כל <th> הוא כותרת עמודה; ה-<br> + <span class="th-sub"> מוסיפים שורת
+                 הבהרה משנית (כמו "UTC / זמן מקומי") מתחת לשם העמודה הראשי -->
+            <th>חותמת זמן<br><span class="th-sub">UTC / זמן מקומי</span></th>
+            <th>סוג איום<br><span class="th-sub">רחפן / כטב"ם</span></th>
+            <th>מזהה סנסורים מדווחים<br><span class="th-sub">Correlation Sensors</span></th>
+            <th>רמת ודאות משוקללת<br><span class="th-sub">%</span></th>
+            <th>נ"צ ומיקום במרחב</th>
+            <th>סטטוס פעולה</th>
+          </tr>
+        </thead>
+        <!-- <tbody>: גוף הנתונים בפועל — 7 שורות אירוע, מסודרות מהחדש (חותמת זמן
+             גבוהה יותר) אל הישן ביותר בתחתית -->
+        <tbody>
+          <!-- שורה 1: האירוע החמור והעדכני ביותר — רחפן תקיפה בוודאות גבוהה (96%),
+               זוהה על ידי שני חיישנים (קורלציה כפולה), הועבר לשו"ב -->
+          <tr>
+            <!-- מחלקת mono כופה כיוון LTR על הערך הטכני (חותמת הזמן) כדי שהספרות
+                 והתווים יוצגו בסדר הנכון בתוך שורה שכיוונה הכללי RTL -->
+            <td><span class="mono">00:41:12Z</span><br><span class="th-sub">03:41:12 מקומי</span></td>
+            <td>רחפן תקיפה</td>
+            <!-- שתי תגיות sensor-chip מציגות קורלציה בין שני חיישנים שונים שזיהו את אותו איום -->
+            <td><span class="sensor-chip">אלפא 1</span><span class="sensor-chip">אלפא 2</span></td>
+            <!-- conf-hi: מחלקה שצובעת ודאות גבוהה בירוק זוהר -->
+            <td><span class="conf conf-hi">96%</span></td>
+            <td class="mono">31.774°N / 35.217°E — גזרה 7</td>
+            <!-- status-progress: האירוע עדיין "בתהליך" (הועבר לשו"ב לטיפול), לכן צבע זהב ולא ירוק -->
+            <td><span class="status status-progress">הועבר לשו"ב</span></td>
+          </tr>
+          <!-- שורה 2: כטב"ם תצפית (לא תקיפה) שזוהה על ידי חיישן בודד בלבד, ודאות בינונית (71%) -->
+          <tr>
+            <td><span class="mono">00:38:55Z</span><br><span class="th-sub">03:38:55 מקומי</span></td>
+            <td>כטב"ם תצפית</td>
+            <td><span class="sensor-chip">ברבו 1</span></td>
+            <!-- conf-mid: ודאות בינונית מוצגת בזהב, לא בירוק המלא -->
+            <td><span class="conf conf-mid">71%</span></td>
+            <td class="mono">31.779°N / 35.221°E — גזרה 7</td>
+            <td><span class="status status-progress">במעקב</span></td>
+          </tr>
+          <!-- שורה 3: המשך אותו רצף איום — עדכון קודם מאותו רחפן, חיישן בודד, ודאות 88% -->
+          <tr>
+            <td><span class="mono">00:33:02Z</span><br><span class="th-sub">03:33:02 מקומי</span></td>
+            <td>רחפן תקיפה</td>
+            <td><span class="sensor-chip">אלפא 1</span></td>
+            <td><span class="conf conf-hi">88%</span></td>
+            <td class="mono">31.773°N / 35.216°E — גזרה 7</td>
+            <td><span class="status status-progress">הועבר לשו"ב</span></td>
+          </tr>
+          <!-- שורה 4: דוגמה לזיהוי כוזב — חתימה לא מסווגת בוודאות נמוכה (42%) שנפסלה
+               לאחר קורלציה בין שני חיישנים, ממחישה את יכולת סינון התרעות השווא של המערכת -->
+          <tr>
+            <td><span class="mono">00:29:47Z</span><br><span class="th-sub">03:29:47 מקומי</span></td>
+            <td>חתימה לא מסווגת</td>
+            <td><span class="sensor-chip">ברבו 1</span><span class="sensor-chip">אלפא 2</span></td>
+            <!-- conf-low: ודאות נמוכה מוצגת בצבע עמום ללא זוהר כלל -->
+            <td><span class="conf conf-low">42%</span></td>
+            <td class="mono">31.781°N / 35.223°E — גזרה 6</td>
+            <!-- status-dismissed: סטטוס "כוזב — נפסל", צבע עמום כי האירוע אינו משמעותי יותר -->
+            <td><span class="status status-dismissed">כוזב — נפסל</span></td>
+          </tr>
+          <!-- שורה 5: כטב"ם תצפית נוסף, זוהה על ידי חיישן בודד, ודאות בינונית (79%) -->
+          <tr>
+            <td><span class="mono">00:18:30Z</span><br><span class="th-sub">03:18:30 מקומי</span></td>
+            <td>כטב"ם תצפית</td>
+            <td><span class="sensor-chip">אלפא 2</span></td>
+            <td><span class="conf conf-mid">79%</span></td>
+            <td class="mono">31.770°N / 35.219°E — גזרה 7</td>
+            <td><span class="status status-progress">במעקב</span></td>
+          </tr>
+          <!-- שורה 6: האירוע המוקדם ביותר בדוגמה שהסתיים בהצלחה — שלושה חיישנים שונים
+               (קורלציה משולשת, הכי חזקה בטבלה) זיהו יחד את אותו רחפן, ודאות גבוהה (93%),
+               והאיום נבלם — ממחיש את שרשרת ההיתוך הרב-חיישני (Multi-Sensor Fusion) עד לסגירה -->
+          <tr>
+            <td><span class="mono">00:07:14Z</span><br><span class="th-sub">03:07:14 מקומי</span></td>
+            <td>רחפן תקיפה</td>
+            <td><span class="sensor-chip">אלפא 1</span><span class="sensor-chip">אלפא 2</span><span class="sensor-chip">ברבו 1</span></td>
+            <td><span class="conf conf-hi">93%</span></td>
+            <td class="mono">31.775°N / 35.218°E — גזרה 7</td>
+            <!-- status-resolved: הסטטוס היחיד בטבלה שמסומן ירוק — האירוע הסתיים בהצלחה -->
+            <td><span class="status status-resolved">נבלם בהצלחה</span></td>
+          </tr>
+          <!-- שורה 7: זיהוי כוזב נוסף בוודאות נמוכה מאוד (35%) מחיישן בודד, שנפסל -->
+          <tr>
+            <td><span class="mono">00:02:05Z</span><br><span class="th-sub">03:02:05 מקומי</span></td>
+            <td>חתימה לא מסווגת</td>
+            <td><span class="sensor-chip">ברבו 1</span></td>
+            <td><span class="conf conf-low">35%</span></td>
+            <td class="mono">31.782°N / 35.225°E — גזרה 6</td>
+            <td><span class="status status-dismissed">כוזב — נפסל</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== סעיף 2: ציר זמן להצגה חוזרת (Mission Replay) =====================
+       "טאבים" אינטראקטיביים מבוססי CSS טהור: לחיצה על תחנת זמן חושפת את פרטי
+       האירוע התואם, ללא שורת JavaScript אחת — ראו הסבר מלא ב-style-debrief.css -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-kicker">MISSION REPLAY</span>
+      <h2 class="section-title">ציר זמן להצגה חוזרת</h2>
+      <p class="section-sub">דפדוף חזותי בין נקודות ציון מרכזיות של המשימה — מ-T-00:00 ועד T-45:00.</p>
+    </div>
+
+    <div class="timeline-scrubber">
+      <!-- שישה כפתורי רדיו "בלתי נראים" (מוסתרים ב-CSS, לא ב-HTML) — כולם משתפים
+           את אותו name="tl" כך שרק אחד יכול להיות מסומן בכל רגע נתון (התנהגות
+           רדיו סטנדרטית של הדפדפן). id ייחודי לכל אחד (tl1..tl6) מקושר ל-<label>
+           המתאים בהמשך. tl4 מסומן checked כברירת מחדל כדי שהעמוד ייפתח כבר
+           כשתחנת ה"התרעה" (האירוע הדרמטי ביותר) גלויה למשתמש -->
+      <input type="radio" name="tl" id="tl1" class="tl-radio">
+      <input type="radio" name="tl" id="tl2" class="tl-radio">
+      <input type="radio" name="tl" id="tl3" class="tl-radio">
+      <input type="radio" name="tl" id="tl4" class="tl-radio" checked>
+      <input type="radio" name="tl" id="tl5" class="tl-radio">
+      <input type="radio" name="tl" id="tl6" class="tl-radio">
+
+      <!-- מסלול ציר הזמן הגרפי: קו רקע + שש תוויות-תחנה לחיצות -->
+      <div class="tl-track">
+        <!-- קו הרקע החוצה את כל התחנות; aria-hidden כי הוא עיצובי-גרפי בלבד -->
+        <span class="tl-line" aria-hidden="true"></span>
+        <!-- כל <label for="tlN"> הוא תגית אמיתית המקושרת לכפתור הרדיו המתאים לה —
+             לחיצה על התווית (או על הטקסט/הנקודה שבתוכה) מסמנת את הרדיו המוסתר,
+             בדיוק כמו שדפדפן עושה עם כל <label>+<input> רגיל, ללא צורך ב-JavaScript -->
+        <label for="tl1" class="tl-marker"><span class="tl-dot"></span><span class="tl-time">T-00:00</span></label>
+        <label for="tl2" class="tl-marker"><span class="tl-dot"></span><span class="tl-time">T-09:00</span></label>
+        <label for="tl3" class="tl-marker"><span class="tl-dot"></span><span class="tl-time">T-18:00</span></label>
+        <!-- מחלקה נוספת tl-marker--alert מסמנת חזותית שזוהי תחנת ההתרעה הקריטית —
+             מקבלת ב-CSS מתאר זהוב קבוע גם כשאינה נבחרת -->
+        <label for="tl4" class="tl-marker tl-marker--alert"><span class="tl-dot"></span><span class="tl-time">T-27:00</span></label>
+        <label for="tl5" class="tl-marker"><span class="tl-dot"></span><span class="tl-time">T-36:00</span></label>
+        <label for="tl6" class="tl-marker"><span class="tl-dot"></span><span class="tl-time">T-45:00</span></label>
+      </div>
+
+      <!-- שישה בלוקי פרטים — רק אחד מוצג בכל רגע (זה שה-id שלו תואם לרדיו המסומן),
+           בזכות סלקטורי ה-":checked ~" שמוגדרים ב-style-debrief.css -->
+      <div class="tl-details">
+        <!-- פרטי תחנה 1: תחילת המשימה, טרם זוהה איום -->
+        <div class="tl-detail" id="d1">
+          <span class="tl-detail-tag">T-00:00</span>
+          <h3>תחילת משימה</h3>
+          <p>פריסת כוחות אלפא ובראבו בגזרה 7. כלל החיישנים במצב האזנה שקטה.</p>
+        </div>
+        <!-- פרטי תחנה 2: זיהוי ראשוני חלש (71%) מחיישן בודד -->
+        <div class="tl-detail" id="d2">
+          <span class="tl-detail-tag">T-09:00</span>
+          <h3>זיהוי אקוסטי ראשוני</h3>
+          <p>חיישן ברבו 1 מדווח על חתימה אקוסטית חשודה. רמת ודאות ראשונית: 71%.</p>
+        </div>
+        <!-- פרטי תחנה 3: הצלבת נתונים בין שני חיישנים מעלה את הוודאות -->
+        <div class="tl-detail" id="d3">
+          <span class="tl-detail-tag">T-18:00</span>
+          <h3>הצלבת נתונים</h3>
+          <p>הצלבה בין אלפא 2 לברבו 1 בענן מעלה את רמת הוודאות ל-88%. המעקב מוסלם לאלפא 1.</p>
+        </div>
+        <!-- פרטי תחנה 4: רגע ההתרעה הקריטית — מחלקות tl-detail--alert /
+             tl-detail-tag--alert צובעות בלוק זה בזהב במקום ירוק, בהתאם לחומרת האירוע.
+             זוהי תחנת ברירת המחדל שמוצגת בטעינת העמוד (הרדיו tl4 מסומן checked למעלה) -->
+        <div class="tl-detail tl-detail--alert" id="d4">
+          <span class="tl-detail-tag tl-detail-tag--alert">T-27:00 · ALERT</span>
+          <h3>התרעה מוצלבת מועברת לשו"ב</h3>
+          <p>ודאות משוקללת של 96% בגזרה 045° צפון-מזרח. כוחות בסיכון: אלפא 1, אלפא 2.</p>
+        </div>
+        <!-- פרטי תחנה 5: סגירת המעגל הפיזי — החיווי מגיע בפועל ללוחם -->
+        <div class="tl-detail" id="d5">
+          <span class="tl-detail-tag">T-36:00</span>
+          <h3>סגירת מעגל פיזית</h3>
+          <p>חיווי רטט מופעל בכתף ימין של אלפא 1. תמונת מצב מעודכנת מועברת לחפ"ק.</p>
+        </div>
+        <!-- פרטי תחנה 6: סיום האירוע בהצלחה -->
+        <div class="tl-detail" id="d6">
+          <span class="tl-detail-tag">T-45:00</span>
+          <h3>סיום אירוע</h3>
+          <p>האיום יצא מטווח הזיהוי ונבלם בהצלחה. המשימה נמשכת כסדרה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== סעיף 3: מדדי ביצוע מבצעיים (KPI) =====================
+       שלושה מדדים מרכזיים המסכמים את ביצועי המערכת לאורך המשימה כולה -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-kicker">PERFORMANCE ANALYTICS</span>
+      <h2 class="section-title">מדדי ביצוע מבצעיים (KPI)</h2>
+      <p class="section-sub">נתוני ביצוע מצטברים ממערך החיישנים לאורך המשימה.</p>
+    </div>
+
+    <!-- מדדים גדולים עם קו זוהר, ללא תיבות נפרדות -->
+    <!-- ^ (הערה מקורית) — שלושת המדדים מוצגים כרשימת Grid עם קווי הפרדה אנכיים
+         בין העמודות (מוגדר ב-CSS), ולא כשלושה כרטיסים ממוסגרים בנפרד -->
+    <div class="kpi-row">
+      <!-- מדד 1: דיוק מודל הבינה המלאכותית הרץ מקומית על הבקר (Edge AI) -->
+      <div class="kpi">
+        <!-- <small> מכיל את סימן האחוז בגודל קטן יותר מהמספר הראשי, כך שה-"94.2"
+             נשאר המוקד החזותי הדומיננטי -->
+        <span class="kpi-value">94.2<small>%</small></span>
+        <!-- קו הדגשה קצר מתחת למספר; aria-hidden כי הוא עיצובי בלבד -->
+        <span class="kpi-underline" aria-hidden="true"></span>
+        <h3 class="kpi-title">דיוק סיווג TinyML בקצה</h3>
+        <p class="kpi-desc">אחוז הסיווגים הנכונים של מודל ה-Edge AI מתוך כלל האירועים שנבדקו.</p>
+      </div>
+
+      <!-- מדד 2: זמן התגובה הכולל של שרשרת הזיהוי-עד-חיווי (Detection-to-Actuation) -->
+      <div class="kpi">
+        <span class="kpi-value">380<small>ms</small></span>
+        <span class="kpi-underline" aria-hidden="true"></span>
+        <h3 class="kpi-title">זמן סגירת מעגל ממוצע</h3>
+        <p class="kpi-desc">משך הזמן הממוצע מרגע הדגימה בחיישן ועד חיווי הרטט בווסט הלוחם.</p>
+      </div>
+
+      <!-- מדד 3: מחלקת kpi--gold דורסת את צבע קו ההדגשה מירוק לזהב (ב-CSS), כדי
+           לסמן שזהו מדד מסוג "סינון/אזהרה" (כמויות שנחסמו) ולא מדד ביצועי-ליבה חיובי -->
+      <div class="kpi kpi--gold">
+        <span class="kpi-value">14<small>אירועים</small></span>
+        <span class="kpi-underline" aria-hidden="true"></span>
+        <h3 class="kpi-title">התרעות שווא שסוננו</h3>
+        <p class="kpi-desc">אירועים שנבלמו באמצעות קורלציה רב-חיישנית טרם הגעה לחיווי הלוחם.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== סעיף 4: פאנל בקרת פרמטרים (Arena Configuration) =====================
+       שלושה פקדי תצורה: שני סליידרים (range) וטוגל אחד (checkbox), כולם רכיבי
+       טופס דפדפניים מקוריים — הגרירה/הקליק פועלים באופן טבעי גם בלי JavaScript,
+       אם כי שינוי הערך בפועל אינו נשמר לשרת בהדגמה סטטית זו -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-kicker">ARENA CONFIGURATION</span>
+      <h2 class="section-title">פאנל בקרת פרמטרים</h2>
+      <p class="section-sub">כיול תצורת המערכת לקראת הפעלה מבצעית הבאה.</p>
+    </div>
+
+    <!-- רשימת בקרות רציפה עם קווי הפרדה, סליידרים וטוגלים מינימליים -->
+    <!-- ^ (הערה מקורית) — שלוש שורות הבקרה מסודרות אנכית ברשימה אחת עם קווי הפרדה
+         דקים ביניהן, במקום שלושה כרטיסים נפרדים -->
+    <div class="config-list">
+      <!-- בקרה 1: רדיוס הקורלציה המרחבית בין חיישנים (סליידר עם ערך ברירת מחדל 50 מטר) -->
+      <div class="config-row-item">
+        <div class="config-row">
+          <!-- <label for="corr-radius"> מקושר ל-<input> שמתחתיו — לחיצה על הטקסט
+               "רדיוס קורלציה מרחבית" תעביר פוקוס לסליידר, שיפור נגישות/שימושיות -->
+          <label for="corr-radius" class="config-label">רדיוס קורלציה מרחבית</label>
+          <!-- הערך המוצג כאן הוא טקסט סטטי התואם ל-value של הסליידר; מכיוון שאין
+               JavaScript בעמוד, הוא לא מתעדכן אוטומטית בזמן גרירה — משמש כתצוגת
+               "ערך ברירת מחדל נוכחי" למוקאפ העיצובי -->
+          <span class="config-value">50 מ'</span>
+        </div>
+        <!-- <input type="range">: פקד סליידר דפדפני אמיתי (לא מזויף). min/max/step/value
+             קובעים את הטווח (10–150 מטר), את גודל הקפיצה (5) ואת נקודת ההתחלה (50) -->
+        <input type="range" id="corr-radius" class="tac-slider" min="10" max="150" step="5" value="50">
+        <!-- שני ערכי הקצה של הסליידר, מוצגים משני צידיו להתמצאות מהירה -->
+        <div class="config-scale"><span>10 מ'</span><span>150 מ'</span></div>
+        <p class="config-note">טווח מרבי בין שני חיישנים לצורך אימות הצלבה משותפת של אותו איום.</p>
+      </div>
+
+      <!-- בקרה 2: סף הוודאות המינימלי שמעליו מופעל חיווי רטט פיזי ללוחם (ברירת מחדל 80%) -->
+      <div class="config-row-item">
+        <div class="config-row">
+          <label for="min-conf" class="config-label">סף ודאות מינימלי להפעלת רטט</label>
+          <span class="config-value">80%</span>
+        </div>
+        <input type="range" id="min-conf" class="tac-slider" min="0" max="100" step="5" value="80">
+        <div class="config-scale"><span>0%</span><span>100%</span></div>
+        <p class="config-note">מתחת לסף זה ההתרעה תישאר בשו"ב בלבד ולא תופעל כחיווי מישושי.</p>
+      </div>
+
+      <!-- בקרה 3: מתג הפעלה/כיבוי (לא סליידר) למצב "שקט קיצוני" -->
+      <div class="config-row-item">
+        <div class="config-row">
+          <label for="silent-mode" class="config-label">הגדרת מצב שקט קיצוני</label>
+          <!-- toggle-switch עוטף checkbox אמיתי מוסתר + ייצוג גרפי (track+thumb).
+               כל ה-<label> הזה הוא גם "הכפתור" עצמו — קליק עליו מסמן/מבטל סימון
+               של ה-<input type="checkbox"> שבתוכו, בלי צורך במאזין אירועים ב-JS -->
+          <label class="toggle-switch">
+            <input type="checkbox" id="silent-mode">
+            <!-- toggle-track הוא "מסילת" המתג הגרפית; toggle-thumb הוא ה"כפתור"
+                 הנע בתוכה. שניהם מעוצבים ב-CSS בהתאם למצב checked/unchecked של
+                 ה-input הסמוך להם (Sibling Selector) -->
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <p class="config-note">השבתת כל חיווי אור וקול במארז המרכזי — חיווי רטט מישושי בלבד. מיועד למשימות חשאיות ברמת חשיפה מרבית.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== פוטר (Footer) =====================
+     שורת סיום קבועה בתחתית כל עמודי האתר — שם המערכת המלא + הצהרת סיווג/הפצה -->
+<footer class="cmd-footer">
+  <span>SAI // STENTOR ACOUSTIC INTELLIGENCE SYSTEM</span>
+  <!-- נקודה מפרידה עיצובית בין שני חלקי הטקסט; לא נדרש aria-hidden כי מדובר בתו
+       טקסט רגיל (•) שקורא מסך יקריא בכל מקרה כחלק טבעי מהמשפט -->
+  <span class="footer-dot">•</span>
+  <span>מסמך תחקור מסווג — הפצה מוגבלת</span>
+</footer>
+
+<!-- מעטפת החלון: מוסתרת ב-CSS, ומוצגת רק כשתיבת הסימון מסומנת -->
+<div class="modal-overlay">
+  <!-- רקע מטושטש לחיץ: תווית שמכסה את כל המסך — לחיצה עליה מבטלת את הסימון וסוגרת את החלון -->
+  <label for="modal-toggle" class="modal-backdrop" aria-hidden="true"></label>
+  <!-- תיבת הדיאלוג עצמה; role ו-aria-modal מסמנים אותה כחלון דו-שיח, aria-labelledby מקשר לכותרת -->
+  <section class="modal-box" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <!-- ראש החלון: כותרת וכפתור סגירה באותה שורה -->
+    <header class="modal-header">
+      <!-- כותרת החלון -->
+      <h2 id="login-modal-title" class="modal-title">OPERATOR AUTHENTICATION</h2>
+      <!-- כפתור הסגירה ✕: תווית שמבטלת את סימון התיבה וכך סוגרת את החלון -->
+      <label for="modal-toggle" class="modal-close" title="Close" aria-label="Close">✕</label>
+    <!-- סגירת ראש החלון -->
+    </header>
+    <!-- טופס ההתחברות: אין בו כפתור submit, ולכן Enter לא שולח אותו והדף לא נטען מחדש -->
+    <form class="modal-form" autocomplete="off">
+      <!-- קבוצת השדה של אות הקריאה -->
+      <div class="form-group">
+        <!-- תווית השדה; for מקשר אותה לשדה -->
+        <label for="login-username" class="form-label">Callsign / Operator ID</label>
+        <!-- שדה אות הקריאה; required הופך את הטופס ל-:invalid כל עוד השדה ריק -->
+        <input type="text" id="login-username" name="username" class="form-input" required spellcheck="false" placeholder="ALPHA-1">
+      <!-- סגירת קבוצת השדה של אות הקריאה -->
+      </div>
+      <!-- קבוצת השדה של קוד האבטחה -->
+      <div class="form-group">
+        <!-- תווית השדה; for מקשר אותה לשדה -->
+        <label for="login-password" class="form-label">Security Passcode</label>
+        <!-- שדה הסיסמה; type="password" מסתיר את התווים, required נדרש לבדיקת התקינות ב-CSS -->
+        <input type="password" id="login-password" name="password" class="form-input" required placeholder="••••••••">
+      <!-- סגירת קבוצת השדה של קוד האבטחה -->
+      </div>
+      <!-- שורת סטטוס: הטקסט שלה נוצר ב-CSS (ממתין / מוכן) לפי תקינות הטופס -->
+      <p class="login-status"></p>
+      <!-- כפתור SIGN IN מדומה: תווית שמסמנת את auth-state — החלון נסגר ומצב "מחובר" נדלק; מנוטרל ב-CSS עד ששני השדות מלאים -->
+      <label for="auth-state" class="modal-submit">SIGN IN</label>
+    <!-- סגירת טופס ההתחברות -->
+    </form>
+  <!-- סגירת תיבת הדיאלוג -->
+  </section>
+<!-- סגירת מעטפת החלון -->
+</div>
+
+</body>
+</html>
