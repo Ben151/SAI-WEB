@@ -1,728 +1,1835 @@
-/* ===== SAI — LIVE C2 — TACTICAL SATELLITE DASHBOARD ===== */
+/* ===== style-c2.css — עיצוב עמוד השו"ב החי בלבד ===== */
 
+/* ---------- משתני צבע וגופן ---------- */
+
+/* שורש המסמך — כאן מגדירים משתנים שכל העמוד משתמש בהם */
 :root{
-  --bg-void: #070a0c;
-  --bg-panel: #0f141a;
-  --bg-panel-alt: #121922;
+  /* צבע הרקע הכהה של האתר */
+  --bg: #0a0d0f;
+  /* צבע רקע של פאנל (בעמוד השו"ב) */
+  --panel: #0f141a;
+  /* צבע רקע של כרטיס בתוך פאנל */
+  --panel-alt: #121922;
+  /* אפור כהה למילוי פסים כבויים */
   --slate: #1a232b;
+  /* צבע גבול של פאנלים וכרטיסים */
   --slate-border: #263039;
+  /* קו הפרדה דק וכמעט שקוף */
+  --line: rgba(255, 255, 255, 0.09);
+  /* הירוק הראשי של המערכת */
   --neon: #00e676;
+  /* ירוק כהה יותר לגבולות */
   --neon-dim: #00b25c;
+  /* ירוק שקוף לזוהר */
   --neon-glow: rgba(0, 230, 118, 0.35);
+  /* כתום-צהוב לאזהרה */
   --amber: #ffb300;
-  --amber-glow: rgba(255, 179, 0, 0.38);
+  /* אדום לסכנה */
   --danger: #ff5252;
-  --danger-glow: rgba(255, 82, 82, 0.45);
-  --text-hi: #eef4f2;
-  --text-mid: #9fb0ac;
-  --text-dim: #5f6f6c;
+  /* אדום שקוף לזוהר */
+  --danger-glow: rgba(255, 82, 82, 0.35);
+  /* טקסט בהיר לכותרות */
+  --text-hi: #f2f6f5;
+  /* טקסט רגיל */
+  --text-mid: #a9b7b4;
+  /* טקסט עמום להסברים */
+  --text-dim: #6c7a78;
+  /* גופן לכותרות */
   --font-head: 'Rubik', 'Heebo', sans-serif;
+  /* גופן לטקסט רגיל */
   --font-body: 'Heebo', 'Rubik', sans-serif;
-  --font-mono: 'Rubik', monospace;
+  /* גופן שבו כל תו באותו רוחב — מראה של מסוף */
+  --font-mono: 'Consolas', 'Courier New', monospace;
+/* סוף המשתנים */
 }
 
-*{ box-sizing: border-box; margin: 0; padding: 0; }
+/* ---------- איפוס ובסיס ---------- */
 
-html, body{ height: 100%; }
+/* כל האלמנטים בעמוד */
+*{
+  /* הרוחב כולל את הריפוד והגבול */
+  box-sizing: border-box;
+  /* ביטול שוליים חיצוניים של הדפדפן */
+  margin: 0;
+  /* ביטול ריפוד פנימי של הדפדפן */
+  padding: 0;
+/* סוף האיפוס */
+}
 
+/* גוף העמוד */
 body{
-  background:
-    radial-gradient(circle at 50% 0%, rgba(0, 230, 118, 0.05), transparent 55%),
-    var(--bg-void);
+  /* רקע כהה עם כתם אור ירוק חלש למעלה */
+  background: radial-gradient(circle at 50% 0%, rgba(0, 230, 118, 0.05), transparent 55%), #070a0c;
+  /* צבע טקסט רגיל */
   color: var(--text-mid);
+  /* גופן הטקסט */
   font-family: var(--font-body);
+  /* מרווח בין שורות */
   line-height: 1.5;
+  /* גובה מינימלי של מסך מלא */
   min-height: 100vh;
+  /* פריסה גמישה */
   display: flex;
+  /* סרגל, פס התרעה, לוח וכותרת תחתונה — אחד מתחת לשני */
   flex-direction: column;
+/* סוף גוף העמוד */
 }
 
-a{ color: inherit; text-decoration: none; }
-h1, h2, h3{ font-family: var(--font-head); color: var(--text-hi); }
+/* כל הקישורים */
+a{
+  /* צבע כמו הטקסט שמסביב (לא כחול) */
+  color: inherit;
+  /* בלי קו תחתון */
+  text-decoration: none;
+/* סוף הקישורים */
+}
 
-/* ===== COMMAND BAR ===== */
+/* כותרות ראשית */
+h1,
+/* כותרות משנה */
+h2,
+/* כותרות קטנות */
+h3{
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* צבע בהיר */
+  color: var(--text-hi);
+/* סוף הכותרות */
+}
 
+/* ---------- סרגל עליון ---------- */
+
+/* הסרגל העליון */
 .cmd-bar{
+  /* נדבק לראש המסך בזמן גלילה */
+  position: sticky;
+  /* צמוד לקצה העליון */
+  top: 0;
+  /* מעל שאר התוכן */
+  z-index: 100;
+  /* פריסה בשורה */
   display: flex;
+  /* יישור אנכי לאמצע */
   align-items: center;
+  /* מיתוג בצד אחד וניווט בצד השני */
   justify-content: space-between;
+  /* רווח בין שני החלקים */
   gap: 24px;
-  padding: 10px 28px;
-  background: rgba(7, 10, 12, 0.92);
-  border-bottom: 1px solid var(--slate-border);
-  box-shadow: 0 1px 0 rgba(0, 230, 118, 0.08);
-  flex: 0 0 auto;
+  /* ריפוד פנימי */
+  padding: 14px 32px;
+  /* רקע כהה חצי-שקוף */
+  background: rgba(10, 13, 15, 0.55);
+  /* טשטוש מה שמאחורי הסרגל (אפקט זכוכית) */
+  backdrop-filter: blur(18px);
+  /* קו דק מתחת לסרגל */
+  border-bottom: 1px solid var(--line);
+/* סוף הסרגל העליון */
 }
 
-.cmd-brand{ display: flex; align-items: center; gap: 14px; }
+/* אזור המיתוג: לוגו, שם וכפתור LOGIN */
+.cmd-brand{
+  /* פריסה בשורה */
+  display: flex;
+  /* יישור אנכי לאמצע */
+  align-items: center;
+  /* רווח בין הפריטים */
+  gap: 14px;
+/* סוף אזור המיתוג */
+}
 
+/* תמונת הלוגו */
 .cmd-logo{
+  /* רוחב */
   width: 38px;
+  /* גובה */
   height: 38px;
+  /* התמונה נכנסת בלי להתעוות */
   object-fit: contain;
+  /* זוהר ירוק סביב הלוגו */
   filter: drop-shadow(0 0 6px var(--neon-glow));
+/* סוף הלוגו */
 }
 
-.cmd-brand-text{ display: flex; flex-direction: column; gap: 3px; }
-
+/* שם המערכת */
 .cmd-title{
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 0.92rem;
-  color: var(--text-hi);
-}
-
-.cmd-status{
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--neon);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.pulse-dot{
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--neon);
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 1.8s infinite;
-}
-
-@keyframes pulse{
-  0%   { box-shadow: 0 0 0 0 var(--neon-glow); }
-  70%  { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
-}
-
-.cmd-nav{ display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-
-.nav-link{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  font-size: 0.84rem;
-  font-weight: 500;
-  color: var(--text-mid);
-  border: 1px solid transparent;
-  border-radius: 4px;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-
-.nav-link:hover{ color: var(--neon); border-color: var(--slate-border); background: var(--bg-panel); }
-
-.nav-link.active{ color: var(--bg-void); background: var(--neon); font-weight: 700; }
-
-.live-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--bg-void);
-  color: var(--danger);
-  font-family: var(--font-head);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 2px 8px;
-  border-radius: 999px;
-  box-shadow: 0 0 10px var(--danger-glow);
-  animation: live-glow 1.6s infinite;
-}
-
-.live-dot{
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--danger);
-  box-shadow: 0 0 6px var(--danger-glow);
-}
-
-@keyframes live-glow{
-  0%, 100% { box-shadow: 0 0 8px var(--danger-glow); }
-  50%      { box-shadow: 0 0 18px var(--danger-glow); }
-}
-
-/* ===== ALERT TICKER ===== */
-
-.alert-ticker{
-  display: flex;
-  align-items: stretch;
-  background: linear-gradient(90deg, rgba(255, 82, 82, 0.16), rgba(255, 82, 82, 0.04));
-  border-bottom: 1px solid rgba(255, 82, 82, 0.35);
-  flex: 0 0 auto;
-  overflow: hidden;
-}
-
-.ticker-flag{
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--danger);
-  color: #1a0505;
-  font-family: var(--font-head);
-  font-weight: 800;
-  font-size: 0.78rem;
-  padding: 8px 18px;
-  letter-spacing: 0.03em;
-  animation: flag-pulse 1.2s infinite;
-}
-
-@keyframes flag-pulse{
-  0%, 100% { filter: brightness(1); }
-  50%      { filter: brightness(1.35); }
-}
-
-.ticker-track{
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-}
-
-.ticker-text{
-  display: inline-block;
-  padding: 8px 0;
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: #ffdede;
-  animation: ticker-scroll 18s linear infinite;
-  direction: rtl;
-}
-
-@keyframes ticker-scroll{
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-/* ===== DASHBOARD GRID ===== */
-
-.dashboard{
-  flex: 1 1 auto;
-  display: grid;
-  grid-template-columns: 300px 1fr 320px;
-  gap: 16px;
-  padding: 16px 24px;
-  min-height: 0;
-}
-
-.panel{
-  background: var(--bg-panel);
-  border: 1px solid var(--slate-border);
-  border-radius: 8px;
-  padding: 18px 18px 20px;
-  max-height: calc(100vh - 210px);
-  overflow-y: auto;
-}
-
-.panel::-webkit-scrollbar{ width: 6px; }
-.panel::-webkit-scrollbar-thumb{ background: var(--slate-border); border-radius: 4px; }
-.panel::-webkit-scrollbar-track{ background: transparent; }
-
-.panel-head{ margin-bottom: 16px; }
-
-.panel-kicker{
+  /* כל שם בשורה משלו (מעל שורת הסטטוס) */
   display: block;
+  /* גופן הכותרות */
   font-family: var(--font-head);
-  font-size: 0.64rem;
+  /* מודגש */
   font-weight: 700;
-  color: var(--neon);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+  /* גודל */
+  font-size: 0.94rem;
+  /* צבע בהיר */
+  color: var(--text-hi);
+/* סוף שם המערכת */
 }
 
-.panel-title{ font-size: 1.08rem; font-weight: 700; }
-
-/* ===== FORCE TELEMETRY ===== */
-
-.telemetry-panel{ display: flex; flex-direction: column; }
-
-.force-card{
-  background: var(--bg-panel-alt);
-  border: 1px solid var(--slate-border);
-  border-radius: 6px;
-  padding: 14px 16px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.force-card--risk{ border-color: rgba(255, 82, 82, 0.4); }
-
-.force-head{ display: flex; align-items: center; gap: 8px; }
-
-.force-status-dot{
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon);
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 1.8s infinite;
-  flex: 0 0 auto;
-}
-
-.force-id{ font-size: 0.92rem; font-weight: 700; flex: 1 1 auto; }
-
-.force-risk{
-  font-family: var(--font-head);
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 999px;
-  color: var(--danger);
-  border: 1px solid rgba(255, 82, 82, 0.5);
-  background: rgba(255, 82, 82, 0.08);
-  white-space: nowrap;
-}
-
-.force-risk--clear{
-  color: var(--neon);
-  border-color: var(--neon-dim);
-  background: rgba(0, 230, 118, 0.06);
-}
-
-.force-row{ display: flex; align-items: center; gap: 10px; font-size: 0.78rem; }
-
-.force-label{ flex: 0 0 76px; color: var(--text-dim); }
-
-.force-value{ flex: 0 0 auto; color: var(--text-hi); font-weight: 600; font-size: 0.76rem; white-space: nowrap; }
-
-.force-value--warn{ color: var(--amber); }
-
-.battery-bar{
-  flex: 1 1 auto;
-  height: 6px;
-  background: var(--slate);
-  border-radius: 999px;
-  overflow: hidden;
-  border: 1px solid var(--slate-border);
-}
-
-.battery-fill{ height: 100%; border-radius: 999px; }
-.battery-high{ background: var(--neon); box-shadow: 0 0 6px var(--neon-glow); }
-.battery-mid{ background: var(--amber); box-shadow: 0 0 6px var(--amber-glow); }
-.battery-low{ background: var(--danger); box-shadow: 0 0 6px var(--danger-glow); }
-
-.signal-bars{ flex: 1 1 auto; display: flex; align-items: flex-end; gap: 3px; height: 14px; }
-
-.bar{ width: 4px; background: var(--slate-border); border-radius: 1px; }
-.bar-1{ height: 30%; } .bar-2{ height: 55%; } .bar-3{ height: 75%; } .bar-4{ height: 100%; }
-.bar.on{ background: var(--neon); box-shadow: 0 0 4px var(--neon-glow); }
-
-.sensor-badge{
-  margin-inline-start: auto;
-  font-family: var(--font-head);
+/* שורת הסטטוס "מערכת מבצעית פעילה" */
+.cmd-status{
+  /* גודל קטן */
   font-size: 0.68rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.sensor-active{
-  color: var(--amber);
-  border: 1px solid rgba(255, 179, 0, 0.5);
-  background: rgba(255, 179, 0, 0.08);
-  animation: sensor-blink 1.4s infinite;
-}
-
-.sensor-idle{
+  /* צבע ירוק */
   color: var(--neon);
-  border: 1px solid var(--neon-dim);
-  background: rgba(0, 230, 118, 0.06);
+/* סוף שורת הסטטוס */
 }
 
-@keyframes sensor-blink{
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
-}
-
-/* ===== TACTICAL MAP ===== */
-
-.map-panel{ display: flex; flex-direction: column; padding: 18px; }
-
-.map-head{ margin-bottom: 14px; }
-
-.map-viewport{
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 420px;
-  border-radius: 6px;
-  overflow: hidden;
-  background: radial-gradient(circle at 30% 20%, #111b1f 0%, #0a1114 55%, #060909 100%);
-  border: 1px solid var(--slate-border);
-}
-
-.map-grid{
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0, 230, 118, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 230, 118, 0.12) 1px, transparent 1px),
-    linear-gradient(rgba(0, 230, 118, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 230, 118, 0.05) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-}
-
-/* radar core */
-
-.radar-core{
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 56%; aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.radar-ring{
-  position: absolute;
-  top: 50%; left: 50%;
-  border: 1px solid rgba(0, 230, 118, 0.22);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.ring-1{ width: 34%; aspect-ratio: 1; }
-.ring-2{ width: 64%; aspect-ratio: 1; }
-.ring-3{ width: 100%; aspect-ratio: 1; border-color: rgba(0, 230, 118, 0.3); }
-
-.radar-sweep{
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 100%; aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  overflow: hidden;
-  background: conic-gradient(from 0deg, transparent 0deg 300deg, rgba(0, 230, 118, 0.05) 330deg, rgba(0, 230, 118, 0.45) 359deg, transparent 360deg);
-  animation: radar-spin 4s linear infinite;
-}
-
-@keyframes radar-spin{
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* compass */
-
-.compass-label{
-  position: absolute;
-  font-family: var(--font-head);
-  font-size: 0.66rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-}
-
-.compass-n{ top: 10px; left: 50%; transform: translateX(-50%); }
-.compass-s{ bottom: 10px; left: 50%; transform: translateX(-50%); }
-.compass-e{ top: 50%; right: 12px; transform: translateY(-50%); }
-.compass-w{ top: 50%; left: 12px; transform: translateY(-50%); }
-
-/* vector line: drone -> troop cluster */
-
-.vector-line{
-  position: absolute;
-  top: 22%; left: 72%;
-  width: 36%; height: 2px;
-  background: repeating-linear-gradient(90deg, var(--danger) 0 6px, transparent 6px 11px);
-  transform-origin: 0% 50%;
-  transform: rotate(143.5deg);
-  opacity: 0.7;
-}
-
-.vector-line::after{
-  content: "";
-  position: absolute;
-  right: -1px; top: 50%;
-  width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 7px solid var(--danger);
-  transform: translateY(-50%);
-}
-
-/* acoustic ping */
-
-.acoustic-ping{
-  position: absolute;
-  width: 0; height: 0;
-  transform: translate(-50%, -50%);
-}
-
-.ping-ring{
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 14px; height: 14px;
-  border: 2px solid var(--amber);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 0.9;
-  animation: ping-out 2.4s ease-out infinite;
-}
-
-.ping-ring.p2{ animation-delay: 0.8s; }
-.ping-ring.p3{ animation-delay: 1.6s; }
-
-@keyframes ping-out{
-  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
-  100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
-}
-
-/* markers */
-
-.marker{
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.friendly-icon{
-  width: 13px; height: 13px;
-  border-radius: 50%;
-  background: var(--neon);
-  border: 2px solid #0a1114;
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 1.8s infinite;
-}
-
-.marker-friendly--risk .friendly-icon{
-  background: var(--danger);
-  box-shadow: 0 0 0 0 var(--danger-glow);
-  animation: pulse-danger 1.4s infinite;
-}
-
-@keyframes pulse-danger{
-  0%   { box-shadow: 0 0 0 0 var(--danger-glow); }
-  70%  { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
-}
-
-.hostile-icon{
+/* הנקודה הירוקה המהבהבת */
+.pulse-dot{
+  /* מאפשר לתת לה רוחב וגובה בתוך שורה */
   display: inline-block;
-  font-size: 1.1rem;
-  color: var(--danger);
-  text-shadow: 0 0 10px var(--danger-glow);
-  transform: rotate(125deg);
-}
-
-.marker-chip{
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-hi);
-  background: rgba(7, 10, 12, 0.85);
-  border: 1px solid var(--slate-border);
-  border-radius: 4px;
-  padding: 2px 8px;
-  white-space: nowrap;
-}
-
-.chip-risk{ border-color: rgba(255, 82, 82, 0.5); color: var(--danger); }
-.chip-hostile{ border-color: rgba(255, 82, 82, 0.5); color: var(--danger); }
-
-/* target lock overlay */
-
-.target-lock{
-  position: absolute;
-  top: 16px; right: 16px;
-  background: rgba(7, 10, 12, 0.82);
-  border: 1px solid rgba(255, 82, 82, 0.4);
-  border-radius: 6px;
-  padding: 12px 14px;
-  min-width: 190px;
-  backdrop-filter: blur(3px);
-  z-index: 4;
-}
-
-.lock-row{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 0.72rem;
-  padding: 3px 0;
-  color: var(--text-dim);
-}
-
-.lock-row strong{ color: var(--text-hi); font-weight: 700; }
-.lock-hot{ color: var(--danger) !important; }
-
-/* map legend */
-
-.map-legend{
-  position: absolute;
-  bottom: 14px; left: 16px;
-  display: flex;
-  gap: 16px;
-  background: rgba(7, 10, 12, 0.7);
-  border: 1px solid var(--slate-border);
-  border-radius: 999px;
-  padding: 6px 16px;
-  font-size: 0.68rem;
-  color: var(--text-mid);
-}
-
-.map-legend span{ display: inline-flex; align-items: center; gap: 6px; }
-
-.legend-swatch{ width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-.legend-friendly{ background: var(--neon); }
-.legend-hostile{ background: var(--danger); }
-.legend-ping{ background: var(--amber); }
-
-/* ===== HAPTIC VISUALIZER ===== */
-
-.haptic-panel{ display: flex; flex-direction: column; }
-
-.vest-mockup{
-  position: relative;
-  width: 100%;
-  height: 210px;
-  margin: 6px 0 20px;
-}
-
-.vest-body{
-  position: absolute;
-  top: 18px; left: 50%;
-  transform: translateX(-50%);
-  width: 58%;
-  height: 170px;
-  background: linear-gradient(180deg, var(--bg-panel-alt), var(--slate));
-  border: 1px solid var(--slate-border);
-  border-radius: 34% 34% 20% 20% / 18% 18% 14% 14%;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-}
-
-.vest-core{
-  position: absolute;
-  top: 44px; left: 50%;
-  transform: translateX(-50%);
-  width: 34px; height: 34px;
+  /* רוחב */
+  width: 7px;
+  /* גובה */
+  height: 7px;
+  /* רווח מהטקסט */
+  margin-inline-end: 7px;
+  /* יישור לאמצע גובה הטקסט */
+  vertical-align: middle;
+  /* עיגול */
   border-radius: 50%;
-  background: rgba(0, 230, 118, 0.1);
-  border: 1px solid var(--neon-dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.vest-core-ring{
-  width: 10px; height: 10px;
-  border-radius: 50%;
+  /* מילוי ירוק */
   background: var(--neon);
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 2.4s infinite;
+  /* הנפשת הגל שמתרחב סביבה */
+  animation: pulse 1.8s infinite;
+/* סוף הנקודה */
 }
 
-.vest-shoulder{
-  position: absolute;
-  top: 28px;
-  width: 30px; height: 30px;
-  border-radius: 50%;
+/* הנפשת "דופק": טבעת זוהר מתרחבת ונעלמת */
+@keyframes pulse{
+  /* בהתחלה */
+  0%{
+    /* טבעת צמודה לנקודה */
+    box-shadow: 0 0 0 0 var(--neon-glow);
+  /* סוף שלב ההתחלה */
+  }
+  /* בסוף */
+  100%{
+    /* טבעת רחבה ושקופה */
+    box-shadow: 0 0 0 8px transparent;
+  /* סוף שלב הסיום */
+  }
+/* סוף הנפשת הדופק */
+}
+
+/* אותה הנפשת דופק — בצבע אדום (לסכנה) */
+@keyframes pulse-red{
+  /* בהתחלה */
+  0%{
+    /* טבעת אדומה צמודה */
+    box-shadow: 0 0 0 0 var(--danger-glow);
+  /* סוף שלב ההתחלה */
+  }
+  /* בסוף */
+  100%{
+    /* טבעת רחבה ושקופה */
+    box-shadow: 0 0 0 10px transparent;
+  /* סוף שלב הסיום */
+  }
+/* סוף הנפשת הדופק האדום */
+}
+
+/* הנפשת הבהוב: האלמנט מתעמעם באמצע ומתבהר חזרה */
+@keyframes blink{
+  /* באמצע הזמן */
+  50%{
+    /* חצי שקוף */
+    opacity: 0.5;
+  /* סוף שלב האמצע */
+  }
+/* סוף הנפשת ההבהוב */
+}
+
+/* ---------- ניווט ---------- */
+
+/* שורת הקישורים */
+.cmd-nav{
+  /* פריסה בשורה */
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.shoulder-left{ left: calc(50% - 29%); }
-.shoulder-right{ right: calc(50% - 29%); }
-
-.shoulder-dot{
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--slate-border);
-  z-index: 2;
-}
-
-.shoulder-active .shoulder-dot{
-  background: var(--neon);
-  box-shadow: 0 0 10px var(--neon-glow);
-}
-
-.shoulder-pulse{
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 14px; height: 14px;
-  border: 2px solid var(--neon);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 0.9;
-  animation: ping-out 1.6s ease-out infinite;
-}
-
-.shoulder-pulse.p2{ animation-delay: 0.55s; }
-
-.haptic-readout{ display: flex; flex-direction: column; gap: 10px; }
-
-.haptic-row{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text-hi);
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: var(--bg-panel-alt);
-  border: 1px solid var(--slate-border);
-}
-
-.haptic-row--active{ border-color: var(--neon-dim); }
-
-.haptic-dot{
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: var(--neon);
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 1.4s infinite;
-  flex: 0 0 auto;
-}
-
-.haptic-dot.off{ background: var(--slate-border); box-shadow: none; animation: none; opacity: 0.6; }
-
-.haptic-note{
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  line-height: 1.6;
-  margin-top: 4px;
-}
-
-/* ===== FOOTER ===== */
-
-.cmd-footer{
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 12px 24px;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  border-top: 1px solid var(--slate-border);
-  text-align: center;
+  /* ירידת שורה אם אין מקום */
   flex-wrap: wrap;
+  /* רווח קטן בין הכפתורים */
+  gap: 4px;
+/* סוף שורת הקישורים */
 }
 
-.footer-dot{ color: var(--neon-dim); }
+/* קישור בניווט — נראה ככפתור */
+.cmd-nav a{
+  /* ריפוד של כפתור */
+  padding: 7px 14px;
+  /* פינות מעוגלות קלות */
+  border-radius: 4px;
+  /* גודל טקסט */
+  font-size: 0.85rem;
+  /* משקל בינוני */
+  font-weight: 500;
+/* סוף קישור בניווט */
+}
 
-/* ===== RESPONSIVE ===== */
+/* קישור במעבר עכבר */
+.cmd-nav a:hover{
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* רקע של פאנל */
+  background: var(--panel);
+/* סוף מעבר עכבר */
+}
 
+/* הקישור של העמוד הנוכחי */
+.cmd-nav a.active{
+  /* טקסט כהה */
+  color: var(--bg);
+  /* רקע ירוק מלא */
+  background: var(--neon);
+  /* מודגש */
+  font-weight: 700;
+/* סוף הקישור הנוכחי */
+}
+
+/* ---------- כותרת תחתונה ---------- */
+
+/* הכותרת התחתונה */
+.cmd-footer{
+  /* טקסט ממורכז */
+  text-align: center;
+  /* ריפוד */
+  padding: 26px 32px 44px;
+  /* קטן */
+  font-size: 0.78rem;
+  /* עמום */
+  color: var(--text-dim);
+  /* קו דק מעל */
+  border-top: 1px solid var(--line);
+/* סוף הכותרת התחתונה */
+}
+
+/* הנקודה המפרידה בכותרת התחתונה */
+.footer-dot{
+  /* ירוק כהה */
+  color: var(--neon-dim);
+  /* רווח משני הצדדים */
+  margin: 0 12px;
+/* סוף הנקודה */
+}
+
+/* ---------- חלון ההתחברות (רק HTML ו-CSS) ---------- */
+
+/* שתי תיבות הסימון ששומרות מצב: "חלון פתוח" ו"מחובר" */
+.modal-toggle,
+/* תיבת הסימון השנייה */
+.auth-state{
+  /* מוסתרות — לוחצים עליהן דרך תוויות label */
+  display: none;
+/* סוף תיבות הסימון */
+}
+
+/* כפתור LOGIN בסרגל */
+.nav-login-btn{
+  /* ריפוד */
+  padding: 7px 18px;
+  /* גבול ירוק */
+  border: 1px solid var(--neon);
+  /* פינות כמעט חדות */
+  border-radius: 3px;
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.78rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריווח אותיות */
+  letter-spacing: 0.18em;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+  /* סמן יד */
+  cursor: pointer;
+  /* זוהר עדין */
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.15);
+/* סוף כפתור LOGIN */
+}
+
+/* כפתור LOGIN במעבר עכבר */
+.nav-login-btn:hover{
+  /* רקע ירוק */
+  background: var(--neon);
+  /* טקסט כהה */
+  color: var(--bg);
+/* סוף מעבר עכבר */
+}
+
+/* תג "מחובר" — מוסתר עד ההתחברות */
+.operator-badge{
+  /* מוסתר */
+  display: none;
+  /* ריפוד */
+  padding: 7px 14px;
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.08);
+  /* גבול ירוק */
+  border: 1px solid var(--neon-dim);
+  /* פינות כמעט חדות */
+  border-radius: 3px;
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.75rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריווח אותיות */
+  letter-spacing: 0.16em;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+/* סוף התג */
+}
+
+/* אחרי SIGN IN: מסתירים את LOGIN */
+.auth-state:checked ~ .cmd-bar .nav-login-btn{
+  /* מוסתר */
+  display: none;
+/* סוף הסתרת LOGIN */
+}
+
+/* אחרי SIGN IN: מציגים את תג "מחובר" */
+.auth-state:checked ~ .cmd-bar .operator-badge{
+  /* מוצג */
+  display: inline-block;
+/* סוף הצגת התג */
+}
+
+/* השכבה שמכסה את כל המסך — מוסתרת כברירת מחדל */
+.modal-overlay{
+  /* מוסתרת */
+  display: none;
+  /* קבועה ביחס למסך */
+  position: fixed;
+  /* מכסה את כל המסך */
+  inset: 0;
+  /* מעל הכל */
+  z-index: 1000;
+  /* מרכוז אנכי של החלון */
+  align-items: center;
+  /* מרכוז אופקי של החלון */
+  justify-content: center;
+  /* רווח משולי המסך */
+  padding: 16px;
+  /* רקע שחור חצי-שקוף */
+  background: rgba(0, 0, 0, 0.75);
+  /* טשטוש העמוד שמאחור */
+  backdrop-filter: blur(6px);
+/* סוף השכבה */
+}
+
+/* כשתיבת "חלון פתוח" מסומנת — מציגים את השכבה */
+.modal-toggle:checked ~ .modal-overlay{
+  /* מוצגת ופורסת את החלון במרכז */
+  display: flex;
+/* סוף פתיחת החלון */
+}
+
+/* כשמחוברים — החלון נסגר */
+.auth-state:checked ~ .modal-overlay{
+  /* מוסתרת */
+  display: none;
+/* סוף סגירה אחרי התחברות */
+}
+
+/* הרקע הלחיץ: לחיצה מחוץ לחלון סוגרת אותו */
+.modal-backdrop{
+  /* מיקום חופשי בתוך השכבה */
+  position: absolute;
+  /* מכסה את כל השכבה */
+  inset: 0;
+  /* סמן יד */
+  cursor: pointer;
+/* סוף הרקע הלחיץ */
+}
+
+/* חלון ההתחברות עצמו (טופס) */
+.modal-box{
+  /* מעל הרקע הלחיץ */
+  position: relative;
+  /* רוחב מלא עד הגבול */
+  width: 100%;
+  /* רוחב מרבי */
+  max-width: 420px;
+  /* ריפוד */
+  padding: 28px;
+  /* שתי שכבות רקע: קו ירוק דק למעלה, ומתחתיו רקע כהה שקוף */
+  background: linear-gradient(90deg, transparent, var(--neon), transparent) top / 100% 2px no-repeat, rgba(10, 13, 15, 0.72);
+  /* גבול ירוק עמום */
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  /* פינות מעוגלות */
+  border-radius: 10px;
+  /* צל כהה וזוהר ירוק */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 230, 118, 0.18);
+/* סוף החלון */
+}
+
+/* ראש החלון: כותרת וכפתור X */
+.modal-header{
+  /* פריסה בשורה */
+  display: flex;
+  /* יישור אנכי */
+  align-items: center;
+  /* כותרת בצד אחד ו-X בצד השני */
+  justify-content: space-between;
+  /* רווח מתחת לשורה */
+  padding-bottom: 14px;
+  /* רווח מהשדות */
+  margin-bottom: 22px;
+  /* קו ירוק דק מתחת */
+  border-bottom: 1px solid rgba(0, 230, 118, 0.18);
+/* סוף ראש החלון */
+}
+
+/* כותרת החלון */
+.modal-title{
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.85rem;
+  /* ריווח אותיות */
+  letter-spacing: 0.12em;
+  /* ירוק */
+  color: var(--neon);
+  /* זוהר טקסט */
+  text-shadow: 0 0 8px var(--neon-glow);
+/* סוף כותרת החלון */
+}
+
+/* כפתור הסגירה X */
+.modal-close{
+  /* רוחב */
+  width: 32px;
+  /* גובה */
+  height: 32px;
+  /* מרכוז ה-X בתוך הריבוע */
+  text-align: center;
+  /* גובה שורה = גובה הכפתור — מרכוז אנכי */
+  line-height: 30px;
+  /* גבול אפור */
+  border: 1px solid rgba(159, 179, 171, 0.25);
+  /* פינות מעוגלות קלות */
+  border-radius: 4px;
+  /* סמן יד */
+  cursor: pointer;
+/* סוף כפתור הסגירה */
+}
+
+/* X במעבר עכבר */
+.modal-close:hover{
+  /* אדום */
+  color: var(--danger);
+  /* גבול אדום */
+  border-color: var(--danger);
+/* סוף X במעבר עכבר */
+}
+
+/* תווית שדה */
+.form-label{
+  /* בשורה משלה */
+  display: block;
+  /* רווח מהשדה */
+  margin-bottom: 7px;
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.72rem;
+  /* אותיות גדולות */
+  text-transform: uppercase;
+  /* ריווח אותיות */
+  letter-spacing: 0.14em;
+  /* טקסט באנגלית — משמאל לימין */
+  direction: ltr;
+/* סוף תווית שדה */
+}
+
+/* שדה קלט */
+.form-input{
+  /* בשורה משלו */
+  display: block;
+  /* רוחב מלא */
+  width: 100%;
+  /* רווח מהשדה הבא */
+  margin-bottom: 18px;
+  /* ריפוד */
+  padding: 11px 14px;
+  /* רקע כהה מאוד */
+  background: rgba(4, 6, 7, 0.85);
+  /* גבול ירוק עמום */
+  border: 1px solid rgba(0, 230, 118, 0.22);
+  /* פינות מעוגלות */
+  border-radius: 5px;
+  /* טקסט בהיר */
+  color: var(--text-hi);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.95rem;
+  /* הקלדה משמאל לימין */
+  direction: ltr;
+/* סוף שדה קלט */
+}
+
+/* שדה שהמשתמש מקליד בו כרגע */
+.form-input:focus{
+  /* בלי המסגרת של הדפדפן */
+  outline: none;
+  /* גבול ירוק מלא */
+  border-color: var(--neon);
+  /* זוהר ירוק */
+  box-shadow: 0 0 14px var(--neon-glow);
+/* סוף שדה פעיל */
+}
+
+/* שורת הסטטוס — ברירת מחדל: ממתין (כתום) */
+.login-status{
+  /* ריפוד */
+  padding: 9px 12px;
+  /* רווח מהכפתור */
+  margin-bottom: 18px;
+  /* פס צבע בצד ימין */
+  border-inline-start: 3px solid var(--amber);
+  /* רקע כתום שקוף */
+  background: rgba(255, 179, 0, 0.08);
+  /* טקסט כתום */
+  color: var(--amber);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.78rem;
+/* סוף שורת הסטטוס */
+}
+
+/* הטקסט של שורת הסטטוס כשהטופס לא מלא */
+.login-status::before{
+  /* תוכן הטקסט */
+  content: "AWAITING CREDENTIALS…";
+/* סוף טקסט ממתין */
+}
+
+/* כששני השדות מלאים (הטופס תקין) — הסטטוס ירוק */
+.modal-box:valid .login-status{
+  /* פס ירוק */
+  border-color: var(--neon);
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.08);
+  /* טקסט ירוק */
+  color: var(--neon);
+/* סוף סטטוס מוכן */
+}
+
+/* הטקסט כשהטופס תקין */
+.modal-box:valid .login-status::before{
+  /* תוכן הטקסט */
+  content: "CREDENTIALS READY — SIGN IN";
+/* סוף טקסט מוכן */
+}
+
+/* כפתור SIGN IN */
+.modal-submit{
+  /* בשורה משלו */
+  display: block;
+  /* ריפוד */
+  padding: 13px;
+  /* טקסט ממורכז */
+  text-align: center;
+  /* רקע ירוק */
+  background: var(--neon);
+  /* טקסט כהה */
+  color: var(--bg);
+  /* פינות מעוגלות */
+  border-radius: 5px;
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.88rem;
+  /* מודגש מאוד */
+  font-weight: 800;
+  /* ריווח אותיות */
+  letter-spacing: 0.2em;
+  /* סמן יד */
+  cursor: pointer;
+  /* זוהר ירוק */
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.3);
+/* סוף כפתור SIGN IN */
+}
+
+/* SIGN IN במעבר עכבר */
+.modal-submit:hover{
+  /* מעט בהיר יותר */
+  filter: brightness(1.1);
+/* סוף מעבר עכבר */
+}
+
+/* כל עוד אחד השדות ריק — הכפתור כבוי */
+.modal-box:invalid .modal-submit{
+  /* חצי שקוף */
+  opacity: 0.45;
+  /* אי אפשר ללחוץ עליו */
+  pointer-events: none;
+/* סוף כפתור כבוי */
+}
+
+/* ---------- תג LIVE ---------- */
+
+/* תג LIVE C2 האדום */
+.live-badge{
+  /* מאפשר ריפוד */
+  display: inline-block;
+  /* רווח מהטקסט */
+  margin-inline-start: 6px;
+  /* ריפוד */
+  padding: 2px 8px;
+  /* רקע כהה */
+  background: var(--bg);
+  /* טקסט אדום */
+  color: var(--danger);
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן מאוד */
+  font-size: 0.62rem;
+  /* מודגש */
+  font-weight: 700;
+  /* צורת גלולה */
+  border-radius: 999px;
+  /* זוהר אדום */
+  box-shadow: 0 0 10px var(--danger-glow);
+  /* הבהוב */
+  animation: blink 1.6s infinite;
+/* סוף התג */
+}
+
+/* ---------- פס ההתרעה ---------- */
+
+/* הפס כולו */
+.alert-ticker{
+  /* דגל ומסילה בשורה */
+  display: flex;
+  /* רקע אדום שקוף שנחלש לצד אחד */
+  background: linear-gradient(90deg, rgba(255, 82, 82, 0.16), rgba(255, 82, 82, 0.04));
+  /* קו אדום מתחת */
+  border-bottom: 1px solid rgba(255, 82, 82, 0.35);
+/* סוף הפס */
+}
+
+/* הדגל האדום "התרעה" */
+.ticker-flag{
+  /* לא מתכווץ */
+  flex-shrink: 0;
+  /* ריפוד */
+  padding: 8px 18px;
+  /* רקע אדום */
+  background: var(--danger);
+  /* טקסט כהה */
+  color: #1a0505;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* עבה */
+  font-weight: 800;
+  /* קטן */
+  font-size: 0.78rem;
+  /* הבהוב */
+  animation: blink 1.2s infinite;
+/* סוף הדגל */
+}
+
+/* המסילה שהטקסט זז בתוכה */
+.ticker-track{
+  /* תופסת את כל שאר הרוחב */
+  flex: 1;
+  /* מסתירה טקסט שיוצא ממנה */
+  overflow: hidden;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+/* סוף המסילה */
+}
+
+/* הטקסט הזז */
+.ticker-text{
+  /* מאפשר להזיז אותו עם transform */
+  display: inline-block;
+  /* ריפוד מעל ומתחת */
+  padding: 8px 0;
+  /* גודל */
+  font-size: 0.86rem;
+  /* חצי מודגש */
+  font-weight: 600;
+  /* ורוד בהיר */
+  color: #ffdede;
+  /* הנפשת התנועה: 18 שניות, מהירות קבועה, בלי סוף */
+  animation: ticker 18s linear infinite;
+/* סוף הטקסט */
+}
+
+/* הנפשת הטקסט הזז */
+@keyframes ticker{
+  /* בהתחלה: מחוץ למסך מימין */
+  from{
+    /* הזזה ימינה ברוחב הטקסט */
+    transform: translateX(100%);
+  /* סוף שלב ההתחלה */
+  }
+  /* בסוף: מחוץ למסך משמאל */
+  to{
+    /* הזזה שמאלה ברוחב כל המסך */
+    transform: translateX(-100vw);
+  /* סוף שלב הסיום */
+  }
+/* סוף ההנפשה */
+}
+
+/* ---------- לוח הבקרה והפאנלים ---------- */
+
+/* לוח הבקרה */
+.dashboard{
+  /* תופס את כל הגובה הפנוי */
+  flex: 1;
+  /* ריפוד */
+  padding: 16px 24px;
+  /* פריסת טבלה */
+  display: grid;
+  /* שלוש עמודות: צד, מפה רחבה, צד */
+  grid-template-columns: 300px 1fr 320px;
+  /* רווח בין הפאנלים */
+  gap: 16px;
+/* סוף לוח הבקרה */
+}
+
+/* פאנל */
+.panel{
+  /* רקע של פאנל */
+  background: var(--panel);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* פינות מעוגלות */
+  border-radius: 8px;
+  /* ריפוד */
+  padding: 18px;
+  /* גובה מרבי — לא יותר מהמסך */
+  max-height: calc(100vh - 210px);
+  /* גלילה בתוך הפאנל אם התוכן ארוך */
+  overflow-y: auto;
+/* סוף פאנל */
+}
+
+/* תווית קטנה מעל כותרת הפאנל */
+.panel-kicker{
+  /* בשורה משלה */
+  display: block;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן מאוד */
+  font-size: 0.64rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ירוק */
+  color: var(--neon);
+  /* ריווח אותיות */
+  letter-spacing: 0.12em;
+  /* רווח מהכותרת */
+  margin-bottom: 6px;
+/* סוף התווית */
+}
+
+/* כותרת הפאנל */
+.panel-title{
+  /* גודל */
+  font-size: 1.08rem;
+  /* רווח מתחת */
+  margin-bottom: 16px;
+/* סוף כותרת הפאנל */
+}
+
+/* ---------- כרטיסי הכוחות ---------- */
+
+/* כרטיס כוח */
+.force-card{
+  /* רקע כרטיס */
+  background: var(--panel-alt);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* פינות מעוגלות */
+  border-radius: 6px;
+  /* ריפוד */
+  padding: 14px 16px;
+  /* רווח מהכרטיס הבא */
+  margin-bottom: 12px;
+  /* פריסה גמישה */
+  display: flex;
+  /* שורות אחת מתחת לשנייה */
+  flex-direction: column;
+  /* רווח בין השורות */
+  gap: 10px;
+/* סוף כרטיס */
+}
+
+/* כרטיס של כוח בסיכון */
+.force-card.risk{
+  /* גבול אדום */
+  border-color: rgba(255, 82, 82, 0.4);
+/* סוף כרטיס בסיכון */
+}
+
+/* ראש הכרטיס וכל שורת נתון */
+.force-head,
+/* שורת נתון */
+.force-row{
+  /* פריטים בשורה */
+  display: flex;
+  /* יישור אנכי */
+  align-items: center;
+  /* רווח בין הפריטים */
+  gap: 10px;
+/* סוף שורות הכרטיס */
+}
+
+/* נקודת המצב הירוקה */
+.force-dot{
+  /* רוחב */
+  width: 8px;
+  /* גובה */
+  height: 8px;
+  /* עיגול */
+  border-radius: 50%;
+  /* ירוק */
+  background: var(--neon);
+  /* דופק */
+  animation: pulse 1.8s infinite;
+/* סוף הנקודה */
+}
+
+/* שם הכוח */
+.force-head h3{
+  /* גודל */
+  font-size: 0.92rem;
+  /* תופס את כל הרוחב הפנוי — דוחף את התג לקצה */
+  flex: 1;
+/* סוף שם הכוח */
+}
+
+/* תג "בסיכון" (אדום) */
+.force-risk{
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן מאוד */
+  font-size: 0.62rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריפוד */
+  padding: 3px 9px;
+  /* צורת גלולה */
+  border-radius: 999px;
+  /* אדום */
+  color: var(--danger);
+  /* גבול אדום */
+  border: 1px solid rgba(255, 82, 82, 0.5);
+  /* רקע אדום שקוף */
+  background: rgba(255, 82, 82, 0.08);
+/* סוף תג בסיכון */
+}
+
+/* תג "ללא סיכון" (ירוק) */
+.force-risk.clear{
+  /* ירוק */
+  color: var(--neon);
+  /* גבול ירוק */
+  border-color: var(--neon-dim);
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.06);
+/* סוף תג ללא סיכון */
+}
+
+/* שורת נתון */
+.force-row{
+  /* קטן */
+  font-size: 0.78rem;
+/* סוף שורת נתון */
+}
+
+/* שם הנתון */
+.force-label{
+  /* רוחב קבוע — כל הפסים מתחילים באותו מקום */
+  width: 76px;
+  /* לא מתכווץ */
+  flex-shrink: 0;
+  /* עמום */
+  color: var(--text-dim);
+/* סוף שם הנתון */
+}
+
+/* ערך הנתון */
+.force-value{
+  /* בהיר */
+  color: var(--text-hi);
+  /* חצי מודגש */
+  font-weight: 600;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+/* סוף ערך הנתון */
+}
+
+/* ערך באזהרה */
+.force-value.warn{
+  /* כתום */
+  color: var(--amber);
+/* סוף ערך באזהרה */
+}
+
+/* מסגרת פס הסוללה */
+.battery-bar{
+  /* תופס את הרוחב הפנוי */
+  flex: 1;
+  /* גובה */
+  height: 6px;
+  /* רקע אפור */
+  background: var(--slate);
+  /* צורת גלולה */
+  border-radius: 999px;
+  /* חיתוך המילוי לפי הפינות */
+  overflow: hidden;
+/* סוף מסגרת הסוללה */
+}
+
+/* מילוי הסוללה (הרוחב כתוב ב-HTML) */
+.battery-fill{
+  /* גובה מלא */
+  height: 100%;
+  /* ירוק */
+  background: var(--neon);
+/* סוף המילוי */
+}
+
+/* מילוי של סוללה בינונית */
+.battery-fill.mid{
+  /* כתום */
+  background: var(--amber);
+/* סוף סוללה בינונית */
+}
+
+/* מעטפת פסי הקליטה */
+.signal-bars{
+  /* תופסת את הרוחב הפנוי */
+  flex: 1;
+  /* הפסים בשורה */
+  display: flex;
+  /* הפסים צומחים מלמטה */
+  align-items: flex-end;
+  /* רווח בין הפסים */
+  gap: 3px;
+  /* גובה */
+  height: 14px;
+/* סוף מעטפת הפסים */
+}
+
+/* פס קליטה (כבוי) */
+.signal-bars span{
+  /* רוחב */
+  width: 4px;
+  /* גובה מלא (הפס הרביעי) */
+  height: 100%;
+  /* אפור */
+  background: var(--slate-border);
+/* סוף פס קליטה */
+}
+
+/* הפס הראשון */
+.signal-bars span:nth-child(1){
+  /* נמוך */
+  height: 30%;
+/* סוף הפס הראשון */
+}
+
+/* הפס השני */
+.signal-bars span:nth-child(2){
+  /* בינוני */
+  height: 55%;
+/* סוף הפס השני */
+}
+
+/* הפס השלישי */
+.signal-bars span:nth-child(3){
+  /* גבוה */
+  height: 75%;
+/* סוף הפס השלישי */
+}
+
+/* פס דולק */
+.signal-bars .on{
+  /* ירוק */
+  background: var(--neon);
+/* סוף פס דולק */
+}
+
+/* תג מצב החיישן (ברירת מחדל: ירוק) */
+.sensor-badge{
+  /* נדחף לקצה השורה */
+  margin-inline-start: auto;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן */
+  font-size: 0.68rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריפוד */
+  padding: 4px 10px;
+  /* צורת גלולה */
+  border-radius: 999px;
+  /* ירוק */
+  color: var(--neon);
+  /* גבול ירוק */
+  border: 1px solid var(--neon-dim);
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.06);
+/* סוף תג החיישן */
+}
+
+/* תג "זיהוי פעיל" — כתום ומהבהב */
+.sensor-badge.active{
+  /* כתום */
+  color: var(--amber);
+  /* גבול כתום */
+  border-color: rgba(255, 179, 0, 0.5);
+  /* רקע כתום שקוף */
+  background: rgba(255, 179, 0, 0.08);
+  /* הבהוב */
+  animation: blink 1.4s infinite;
+/* סוף תג פעיל */
+}
+
+/* ---------- המפה ---------- */
+
+/* פאנל המפה */
+.map-panel{
+  /* פריסה גמישה */
+  display: flex;
+  /* כותרת מעל מפה */
+  flex-direction: column;
+/* סוף פאנל המפה */
+}
+
+/* חלון המפה */
+.map{
+  /* בסיס למיקום כל הסמנים */
+  position: relative;
+  /* תופס את כל הגובה הפנוי בפאנל */
+  flex: 1;
+  /* גובה מינימלי */
+  min-height: 420px;
+  /* פינות מעוגלות */
+  border-radius: 6px;
+  /* מה שיוצא מהמפה לא נראה */
+  overflow: hidden;
+  /* רקע כהה עם אור חלש בפינה */
+  background: radial-gradient(circle at 30% 20%, #111b1f, #060909);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+/* סוף חלון המפה */
+}
+
+/* רשת הקווים */
+.map-grid{
+  /* מיקום חופשי */
+  position: absolute;
+  /* מכסה את כל המפה */
+  inset: 0;
+  /* ארבעה פסים: קווים אופקיים ואנכיים — חזקים וחלשים */
+  background-image: linear-gradient(rgba(0, 230, 118, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 118, 0.12) 1px, transparent 1px), linear-gradient(rgba(0, 230, 118, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 118, 0.05) 1px, transparent 1px);
+  /* הקווים החזקים כל 120 פיקסלים, החלשים כל 24 */
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+/* סוף הרשת */
+}
+
+/* המכ"ם */
+.radar{
+  /* מיקום חופשי */
+  position: absolute;
+  /* באמצע הגובה */
+  top: 50%;
+  /* באמצע הרוחב */
+  left: 50%;
+  /* רוחב */
+  width: 56%;
+  /* ריבוע — הגובה שווה לרוחב */
+  aspect-ratio: 1;
+  /* מרכוז מדויק */
+  transform: translate(-50%, -50%);
+/* סוף המכ"ם */
+}
+
+/* טבעת מכ"ם */
+.ring{
+  /* מיקום חופשי בתוך המכ"ם */
+  position: absolute;
+  /* עיגול */
+  border-radius: 50%;
+  /* קו ירוק דק */
+  border: 1px solid rgba(0, 230, 118, 0.22);
+/* סוף טבעת */
+}
+
+/* הטבעת הפנימית */
+.ring-1{
+  /* מרווח גדול מכל צד — טבעת קטנה */
+  inset: 33%;
+/* סוף הטבעת הפנימית */
+}
+
+/* הטבעת האמצעית */
+.ring-2{
+  /* מרווח בינוני מכל צד */
+  inset: 18%;
+/* סוף הטבעת האמצעית */
+}
+
+/* הטבעת החיצונית */
+.ring-3{
+  /* בלי מרווח — בגודל המכ"ם */
+  inset: 0;
+/* סוף הטבעת החיצונית */
+}
+
+/* קרן הסריקה */
+.sweep{
+  /* מיקום חופשי */
+  position: absolute;
+  /* בגודל המכ"ם */
+  inset: 0;
+  /* עיגול */
+  border-radius: 50%;
+  /* "פרוסת פיצה" ירוקה שמתחזקת לקראת הקצה */
+  background: conic-gradient(transparent 300deg, rgba(0, 230, 118, 0.45) 359deg, transparent 360deg);
+  /* סיבוב מתמשך */
+  animation: spin 4s linear infinite;
+/* סוף קרן הסריקה */
+}
+
+/* הנפשת סיבוב */
+@keyframes spin{
+  /* בסוף */
+  to{
+    /* סיבוב שלם */
+    transform: rotate(360deg);
+  /* סוף שלב הסיום */
+  }
+/* סוף הנפשת הסיבוב */
+}
+
+/* תווית כיוון (צפון, דרום...) */
+.compass{
+  /* מיקום חופשי */
+  position: absolute;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן מאוד */
+  font-size: 0.66rem;
+  /* עמום */
+  color: var(--text-dim);
+/* סוף תווית כיוון */
+}
+
+/* צפון */
+.compass-n{
+  /* למעלה */
+  top: 10px;
+  /* באמצע הרוחב */
+  left: 50%;
+/* סוף צפון */
+}
+
+/* דרום */
+.compass-s{
+  /* למטה */
+  bottom: 10px;
+  /* באמצע הרוחב */
+  left: 50%;
+/* סוף דרום */
+}
+
+/* מזרח */
+.compass-e{
+  /* באמצע הגובה */
+  top: 50%;
+  /* צמוד לימין */
+  right: 12px;
+/* סוף מזרח */
+}
+
+/* מערב */
+.compass-w{
+  /* באמצע הגובה */
+  top: 50%;
+  /* צמוד לשמאל */
+  left: 12px;
+/* סוף מערב */
+}
+
+/* הקו המקווקו מהרחפן אל הכוחות */
+.vector-line{
+  /* מיקום חופשי */
+  position: absolute;
+  /* מתחיל במיקום הרחפן — גובה */
+  top: 22%;
+  /* מתחיל במיקום הרחפן — רוחב */
+  left: 72%;
+  /* אורך הקו */
+  width: 36%;
+  /* עובי הקו */
+  height: 2px;
+  /* מקווקו: 6 פיקסלים אדום, 5 שקוף, וחוזר חלילה */
+  background: repeating-linear-gradient(90deg, var(--danger) 0 6px, transparent 6px 11px);
+  /* נקודת הסיבוב: תחילת הקו */
+  transform-origin: left;
+  /* סיבוב הקו לכיוון הכוחות */
+  transform: rotate(143.5deg);
+  /* מעט שקוף */
+  opacity: 0.7;
+/* סוף הקו */
+}
+
+/* ראש החץ בסוף הקו — משולש שנוצר מגבולות */
+.vector-line::after{
+  /* חובה כדי שיופיע */
+  content: "";
+  /* מיקום חופשי */
+  position: absolute;
+  /* בקצה הקו */
+  right: -1px;
+  /* מורם קצת כדי לשבת על הקו */
+  top: -4px;
+  /* גבול עליון שקוף */
+  border-top: 5px solid transparent;
+  /* גבול תחתון שקוף */
+  border-bottom: 5px solid transparent;
+  /* גבול שמאלי אדום — יחד הם יוצרים משולש */
+  border-left: 7px solid var(--danger);
+/* סוף ראש החץ */
+}
+
+/* נקודת המוצא של גלי הזיהוי (המיקום עצמו ב-style) */
+.ping{
+  /* מיקום חופשי בתוך המפה */
+  position: absolute;
+/* סוף נקודת המוצא */
+}
+
+/* גל זיהוי כתום */
+.ping span{
+  /* מיקום חופשי (נקודת המוצא נקבעת ב-style של ה-div) */
+  position: absolute;
+  /* רוחב */
+  width: 14px;
+  /* גובה */
+  height: 14px;
+  /* הזזה בחצי מהגודל — מרכוז על הנקודה */
+  margin: -7px 0 0 -7px;
+  /* קו כתום */
+  border: 2px solid var(--amber);
+  /* עיגול */
+  border-radius: 50%;
+  /* הגל מתרחב ונעלם */
+  animation: ping-out 2.4s ease-out infinite;
+/* סוף גל זיהוי */
+}
+
+/* הגל השני */
+.ping span:nth-child(2){
+  /* מתחיל אחרי 0.8 שניות */
+  animation-delay: 0.8s;
+/* סוף הגל השני */
+}
+
+/* הגל השלישי */
+.ping span:nth-child(3){
+  /* מתחיל אחרי 1.6 שניות */
+  animation-delay: 1.6s;
+/* סוף הגל השלישי */
+}
+
+/* הנפשת גל שמתרחב */
+@keyframes ping-out{
+  /* בהתחלה */
+  from{
+    /* בגודל רגיל */
+    transform: scale(1);
+    /* כמעט אטום */
+    opacity: 0.9;
+  /* סוף שלב ההתחלה */
+  }
+  /* בסוף */
+  to{
+    /* פי 9 מהגודל */
+    transform: scale(9);
+    /* שקוף לגמרי */
+    opacity: 0;
+  /* סוף שלב הסיום */
+  }
+/* סוף הנפשת הגל */
+}
+
+/* סמן על המפה (אייקון + תווית) */
+.marker{
+  /* מיקום חופשי (המיקום עצמו ב-style) */
+  position: absolute;
+  /* מעל הקווים והגלים */
+  z-index: 3;
+  /* פריסה גמישה */
+  display: flex;
+  /* אייקון מעל תווית */
+  flex-direction: column;
+  /* מרכוז */
+  align-items: center;
+  /* רווח בין האייקון לתווית */
+  gap: 5px;
+  /* מרכוז הסמן על הנקודה */
+  transform: translate(-50%, -50%);
+/* סוף סמן */
+}
+
+/* נקודת כוח ידידותי */
+.friendly-icon{
+  /* רוחב */
+  width: 13px;
+  /* גובה */
+  height: 13px;
+  /* עיגול */
+  border-radius: 50%;
+  /* ירוק */
+  background: var(--neon);
+  /* מסגרת כהה */
+  border: 2px solid #0a1114;
+  /* דופק */
+  animation: pulse 1.8s infinite;
+/* סוף נקודת כוח */
+}
+
+/* נקודת כוח בסיכון */
+.marker.risk .friendly-icon{
+  /* אדום */
+  background: var(--danger);
+  /* דופק אדום */
+  animation: pulse-red 1.4s infinite;
+/* סוף נקודת כוח בסיכון */
+}
+
+/* אייקון הרחפן */
+.hostile-icon{
+  /* מאפשר סיבוב */
+  display: inline-block;
+  /* גודל */
+  font-size: 1.1rem;
+  /* אדום */
+  color: var(--danger);
+  /* זוהר אדום */
+  text-shadow: 0 0 10px var(--danger-glow);
+  /* סיבוב לכיוון התנועה */
+  transform: rotate(125deg);
+/* סוף אייקון הרחפן */
+}
+
+/* תווית קטנה ליד סמן */
+.chip{
+  /* קטן */
+  font-size: 0.68rem;
+  /* מודגש */
+  font-weight: 700;
+  /* בהיר */
+  color: var(--text-hi);
+  /* רקע כהה */
+  background: rgba(7, 10, 12, 0.85);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* פינות מעוגלות קלות */
+  border-radius: 4px;
+  /* ריפוד */
+  padding: 2px 8px;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+/* סוף תווית */
+}
+
+/* תווית אדומה */
+.chip.danger{
+  /* אדום */
+  color: var(--danger);
+  /* גבול אדום */
+  border-color: rgba(255, 82, 82, 0.5);
+/* סוף תווית אדומה */
+}
+
+/* חלונית פרטי האיום */
+.target-lock{
+  /* מיקום חופשי */
+  position: absolute;
+  /* מעל הכל במפה */
+  z-index: 4;
+  /* למעלה */
+  top: 16px;
+  /* מימין */
+  right: 16px;
+  /* רוחב מינימלי */
+  min-width: 190px;
+  /* ריפוד */
+  padding: 12px 14px;
+  /* רקע כהה */
+  background: rgba(7, 10, 12, 0.82);
+  /* גבול אדום */
+  border: 1px solid rgba(255, 82, 82, 0.4);
+  /* פינות מעוגלות */
+  border-radius: 6px;
+/* סוף החלונית */
+}
+
+/* שורה בחלונית */
+.target-lock p{
+  /* שם וערך בשורה */
+  display: flex;
+  /* שם בצד אחד וערך בצד השני */
+  justify-content: space-between;
+  /* רווח מינימלי ביניהם */
+  gap: 16px;
+  /* קטן */
+  font-size: 0.72rem;
+  /* ריווח */
+  padding: 3px 0;
+  /* עמום */
+  color: var(--text-dim);
+/* סוף שורה */
+}
+
+/* הערך בשורה */
+.target-lock strong{
+  /* בהיר */
+  color: var(--text-hi);
+/* סוף הערך */
+}
+
+/* ערך "חם" (מסוכן) */
+.target-lock .hot{
+  /* אדום */
+  color: var(--danger);
+/* סוף ערך חם */
+}
+
+/* מקרא המפה */
+.map-legend{
+  /* מיקום חופשי */
+  position: absolute;
+  /* למטה */
+  bottom: 14px;
+  /* משמאל */
+  left: 16px;
+  /* פריטים בשורה */
+  display: flex;
+  /* רווח בין הפריטים */
+  gap: 16px;
+  /* ריפוד */
+  padding: 6px 16px;
+  /* רקע כהה */
+  background: rgba(7, 10, 12, 0.7);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* צורת גלולה */
+  border-radius: 999px;
+  /* קטן */
+  font-size: 0.68rem;
+/* סוף המקרא */
+}
+
+/* עיגול צבע במקרא */
+.swatch{
+  /* מאפשר רוחב וגובה */
+  display: inline-block;
+  /* רוחב */
+  width: 9px;
+  /* גובה */
+  height: 9px;
+  /* רווח מהטקסט */
+  margin-inline-end: 6px;
+  /* עיגול */
+  border-radius: 50%;
+/* סוף עיגול צבע */
+}
+
+/* עיגול ירוק */
+.swatch.green{
+  /* ירוק */
+  background: var(--neon);
+/* סוף ירוק */
+}
+
+/* עיגול אדום */
+.swatch.red{
+  /* אדום */
+  background: var(--danger);
+/* סוף אדום */
+}
+
+/* עיגול כתום */
+.swatch.amber{
+  /* כתום */
+  background: var(--amber);
+/* סוף כתום */
+}
+
+/* ---------- מדמה הרטט ---------- */
+
+/* מעטפת איור האפוד */
+.vest{
+  /* בסיס למיקום חלקי האפוד */
+  position: relative;
+  /* גובה */
+  height: 210px;
+  /* רווח מעל ומתחת */
+  margin: 6px 0 20px;
+/* סוף מעטפת האפוד */
+}
+
+/* גוף האפוד */
+.vest-body{
+  /* מיקום חופשי */
+  position: absolute;
+  /* רווח מלמעלה */
+  top: 18px;
+  /* רווח מימין */
+  right: 21%;
+  /* רווח משמאל */
+  left: 21%;
+  /* גובה */
+  height: 170px;
+  /* מעבר צבע מלמעלה למטה */
+  background: linear-gradient(var(--panel-alt), var(--slate));
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* פינות מעוגלות יותר למעלה — צורת אפוד */
+  border-radius: 34% 34% 20% 20% / 18% 18% 14% 14%;
+/* סוף גוף האפוד */
+}
+
+/* הבקר במרכז החזה */
+.vest-core{
+  /* מיקום חופשי */
+  position: absolute;
+  /* רווח מלמעלה */
+  top: 44px;
+  /* מרכוז: חצי רוחב פחות חצי מהגודל */
+  left: calc(50% - 17px);
+  /* רוחב */
+  width: 34px;
+  /* גובה */
+  height: 34px;
+  /* עיגול */
+  border-radius: 50%;
+  /* גבול ירוק */
+  border: 1px solid var(--neon-dim);
+  /* נקודה ירוקה באמצע ורקע ירוק שקוף מסביב */
+  background: radial-gradient(var(--neon) 5px, rgba(0, 230, 118, 0.1) 6px);
+  /* דופק */
+  animation: pulse 2.4s infinite;
+/* סוף הבקר */
+}
+
+/* מנוע רטט בכתף (כבוי) */
+.shoulder{
+  /* מיקום חופשי */
+  position: absolute;
+  /* רווח מלמעלה */
+  top: 36px;
+  /* רוחב */
+  width: 14px;
+  /* גובה */
+  height: 14px;
+  /* עיגול */
+  border-radius: 50%;
+  /* אפור */
+  background: var(--slate-border);
+/* סוף מנוע רטט */
+}
+
+/* כתף שמאל */
+.shoulder.left{
+  /* קרוב לצד שמאל של האפוד */
+  left: calc(21% + 8px);
+/* סוף כתף שמאל */
+}
+
+/* כתף ימין */
+.shoulder.right{
+  /* קרוב לצד ימין של האפוד */
+  right: calc(21% + 8px);
+/* סוף כתף ימין */
+}
+
+/* מנוע רטט פעיל */
+.shoulder.on{
+  /* ירוק */
+  background: var(--neon);
+/* סוף מנוע פעיל */
+}
+
+/* שני גלים סביב המנוע הפעיל (שני אלמנטים מדומים) */
+.shoulder.on::before,
+/* הגל השני */
+.shoulder.on::after{
+  /* חובה כדי שיופיעו */
+  content: "";
+  /* מיקום חופשי */
+  position: absolute;
+  /* בגודל המנוע */
+  inset: 0;
+  /* קו ירוק */
+  border: 2px solid var(--neon);
+  /* עיגול */
+  border-radius: 50%;
+  /* מתרחבים ונעלמים */
+  animation: ping-out 1.6s ease-out infinite;
+/* סוף הגלים */
+}
+
+/* הגל השני */
+.shoulder.on::after{
+  /* מתחיל באיחור */
+  animation-delay: 0.55s;
+/* סוף הגל השני */
+}
+
+/* שורת מצב כתף */
+.haptic-row{
+  /* נקודה וטקסט בשורה */
+  display: flex;
+  /* יישור אנכי */
+  align-items: center;
+  /* רווח */
+  gap: 10px;
+  /* רווח מהשורה הבאה */
+  margin-bottom: 10px;
+  /* ריפוד */
+  padding: 8px 12px;
+  /* רקע כרטיס */
+  background: var(--panel-alt);
+  /* גבול */
+  border: 1px solid var(--slate-border);
+  /* פינות מעוגלות */
+  border-radius: 6px;
+  /* גודל */
+  font-size: 0.86rem;
+  /* חצי מודגש */
+  font-weight: 600;
+  /* בהיר */
+  color: var(--text-hi);
+/* סוף שורת מצב */
+}
+
+/* שורה פעילה */
+.haptic-row.on{
+  /* גבול ירוק */
+  border-color: var(--neon-dim);
+/* סוף שורה פעילה */
+}
+
+/* נקודת מצב (כבויה) */
+.haptic-dot{
+  /* רוחב */
+  width: 9px;
+  /* גובה */
+  height: 9px;
+  /* עיגול */
+  border-radius: 50%;
+  /* אפור */
+  background: var(--slate-border);
+/* סוף נקודת מצב */
+}
+
+/* נקודה בשורה פעילה */
+.haptic-row.on .haptic-dot{
+  /* ירוק */
+  background: var(--neon);
+  /* דופק */
+  animation: pulse 1.4s infinite;
+/* סוף נקודה פעילה */
+}
+
+/* הסבר בתחתית הפאנל */
+.haptic-note{
+  /* קטן */
+  font-size: 0.78rem;
+  /* עמום */
+  color: var(--text-dim);
+/* סוף ההסבר */
+}
+
+/* ---------- מסכים צרים ---------- */
+
+/* מסך ברוחב עד 1180 פיקסלים */
 @media (max-width: 1180px){
-  .dashboard{ grid-template-columns: 260px 1fr 280px; }
+  /* לוח הבקרה */
+  .dashboard{
+    /* פאנלי צד צרים יותר */
+    grid-template-columns: 260px 1fr 280px;
+  /* סוף לוח הבקרה */
+  }
+/* סוף מסך עד 1180 */
 }
 
+/* מסך ברוחב עד 960 פיקסלים */
 @media (max-width: 960px){
-  .dashboard{ grid-template-columns: 1fr; }
-  .panel{ max-height: none; }
-  .map-viewport{ min-height: 340px; }
+  /* לוח הבקרה */
+  .dashboard{
+    /* עמודה אחת — הפאנלים אחד מתחת לשני */
+    grid-template-columns: 1fr;
+  /* סוף לוח הבקרה */
+  }
+  /* פאנל */
+  .panel{
+    /* בלי הגבלת גובה */
+    max-height: none;
+  /* סוף פאנל */
+  }
+  /* המפה */
+  .map{
+    /* נמוכה יותר */
+    min-height: 340px;
+  /* סוף המפה */
+  }
+/* סוף מסך עד 960 */
 }
 
+/* מסך ברוחב עד 720 פיקסלים (טלפון) */
+@media (max-width: 720px){
+  /* הסרגל העליון */
+  .cmd-bar{
+    /* מיתוג מעל וניווט מתחת */
+    flex-direction: column;
+    /* יישור לימין */
+    align-items: flex-start;
+    /* רווח קטן יותר */
+    gap: 14px;
+  /* סוף הסרגל */
+  }
+/* סוף מסך עד 720 */
+}
+
+/* מסך ברוחב עד 600 פיקסלים */
 @media (max-width: 600px){
-  .cmd-bar{ flex-direction: column; align-items: flex-start; gap: 10px; }
-  .cmd-nav{ width: 100%; }
-  .target-lock{ min-width: 150px; padding: 8px 10px; }
-  .map-legend{ flex-wrap: wrap; gap: 8px; }
+  /* חלונית האיום */
+  .target-lock{
+    /* צרה יותר */
+    min-width: 150px;
+    /* ריפוד קטן יותר */
+    padding: 8px 10px;
+  /* סוף החלונית */
+  }
+  /* המקרא */
+  .map-legend{
+    /* ירידת שורה אם אין מקום */
+    flex-wrap: wrap;
+    /* רווח קטן יותר */
+    gap: 8px;
+  /* סוף המקרא */
+  }
+/* סוף מסך עד 600 */
 }

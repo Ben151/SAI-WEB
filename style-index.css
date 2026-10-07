@@ -1,522 +1,1244 @@
-/* ============================================================
-   SAI — STENTOR AUDIO INTELLIGENCE
-   סקירת מערכת — עיצוב טקטי מודרני, רקע אמביינטי וללא כרטיסיות כבדות
-   ============================================================ */
+/* ===== style-index.css — עיצוב עמוד סקירת המערכת בלבד ===== */
 
+/* ---------- משתני צבע וגופן ---------- */
+
+/* שורש המסמך — כאן מגדירים משתנים שכל העמוד משתמש בהם */
 :root{
-  --bg-void: #0a0d0f;
-  --bg-glass: rgba(255, 255, 255, 0.025);
-  --hairline: rgba(255, 255, 255, 0.09);
+  /* צבע הרקע הכהה של האתר */
+  --bg: #0a0d0f;
+  /* קו הפרדה דק וכמעט שקוף */
+  --line: rgba(255, 255, 255, 0.09);
+  /* הירוק הראשי של המערכת */
   --neon: #00e676;
+  /* ירוק כהה יותר לגבולות */
   --neon-dim: #00b25c;
+  /* ירוק שקוף לזוהר */
   --neon-glow: rgba(0, 230, 118, 0.35);
-  --cyan-glow: rgba(56, 189, 248, 0.10);
+  /* כתום-צהוב לאזהרה */
+  --amber: #ffb300;
+  /* אדום לסכנה */
+  --danger: #ff5252;
+  /* אדום שקוף לזוהר */
+  --danger-glow: rgba(255, 82, 82, 0.35);
+  /* טקסט בהיר לכותרות */
   --text-hi: #f2f6f5;
+  /* טקסט רגיל */
   --text-mid: #a9b7b4;
+  /* טקסט עמום להסברים */
   --text-dim: #6c7a78;
+  /* גופן לכותרות */
   --font-head: 'Rubik', 'Heebo', sans-serif;
+  /* גופן לטקסט רגיל */
   --font-body: 'Heebo', 'Rubik', sans-serif;
+  /* גופן שבו כל תו באותו רוחב — מראה של מסוף */
+  --font-mono: 'Consolas', 'Courier New', monospace;
+/* סוף המשתנים */
 }
 
-*{ box-sizing: border-box; margin: 0; padding: 0; }
+/* ---------- איפוס ובסיס ---------- */
 
-html{ scroll-behavior: smooth; }
+/* כל האלמנטים בעמוד */
+*{
+  /* הרוחב כולל את הריפוד והגבול */
+  box-sizing: border-box;
+  /* ביטול שוליים חיצוניים של הדפדפן */
+  margin: 0;
+  /* ביטול ריפוד פנימי של הדפדפן */
+  padding: 0;
+/* סוף האיפוס */
+}
 
-/* רקע: זוהר אמביינטי רדיאלי במקום רשת קווים קשיחה */
+/* גוף העמוד */
 body{
-  background-color: var(--bg-void);
-  background-image:
-    radial-gradient(ellipse 900px 560px at 12% -8%, var(--neon-glow), transparent 60%),
-    radial-gradient(ellipse 800px 620px at 105% 25%, var(--cyan-glow), transparent 60%),
-    radial-gradient(ellipse 1000px 700px at 50% 115%, rgba(0, 230, 118, 0.06), transparent 65%);
+  /* צבע רקע כהה */
+  background-color: var(--bg);
+  /* שלושה כתמי אור רכים ברקע: ירוק למעלה, תכלת בצד, ירוק חלש למטה */
+  background-image: radial-gradient(ellipse 900px 560px at 12% -8%, var(--neon-glow), transparent 60%), radial-gradient(ellipse 800px 620px at 105% 25%, rgba(56, 189, 248, 0.1), transparent 60%), radial-gradient(ellipse 1000px 700px at 50% 115%, rgba(0, 230, 118, 0.06), transparent 65%);
+  /* הרקע לא זז בזמן גלילה */
   background-attachment: fixed;
+  /* צבע טקסט רגיל */
   color: var(--text-mid);
+  /* גופן הטקסט */
   font-family: var(--font-body);
+  /* מרווח בין שורות */
   line-height: 1.7;
+  /* גובה מינימלי של מסך מלא */
   min-height: 100vh;
-  /* חיתוך גלישה אופקית — בלי פס גלילה אופקי (clip ולא hidden, כדי שסרגל הניווט הדביק ימשיך לעבוד) */
-  overflow-x: clip;
+  /* מונע פס גלילה אופקי */
+  overflow-x: hidden;
+/* סוף גוף העמוד */
 }
 
-a{ color: inherit; text-decoration: none; }
-h1, h2, h3{ font-family: var(--font-head); color: var(--text-hi); letter-spacing: 0.01em; }
-
-/* ===== סרגל ניווט עליון — פס זכוכית צף ===== */
-
-.cmd-bar{
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 14px 32px;
-  background: rgba(10, 13, 15, 0.55);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border-bottom: 1px solid var(--hairline);
+/* כל הקישורים */
+a{
+  /* צבע כמו הטקסט שמסביב (לא כחול) */
+  color: inherit;
+  /* בלי קו תחתון */
+  text-decoration: none;
+/* סוף הקישורים */
 }
 
-.cmd-brand{ display: flex; align-items: center; gap: 14px; }
-
-.cmd-logo{
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 6px var(--neon-glow));
-}
-
-.cmd-brand-text{ display: flex; flex-direction: column; gap: 4px; }
-
-.cmd-title{
+/* כותרות ראשית */
+h1,
+/* כותרות משנה */
+h2,
+/* כותרות קטנות */
+h3{
+  /* גופן הכותרות */
   font-family: var(--font-head);
-  font-weight: 700;
-  font-size: 0.94rem;
+  /* צבע בהיר */
   color: var(--text-hi);
+/* סוף הכותרות */
 }
 
-.cmd-status{
-  display: inline-flex;
+/* ---------- סרגל עליון ---------- */
+
+/* הסרגל העליון */
+.cmd-bar{
+  /* נדבק לראש המסך בזמן גלילה */
+  position: sticky;
+  /* צמוד לקצה העליון */
+  top: 0;
+  /* מעל שאר התוכן */
+  z-index: 100;
+  /* פריסה בשורה */
+  display: flex;
+  /* יישור אנכי לאמצע */
   align-items: center;
-  gap: 7px;
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--neon);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* מיתוג בצד אחד וניווט בצד השני */
+  justify-content: space-between;
+  /* רווח בין שני החלקים */
+  gap: 24px;
+  /* ריפוד פנימי */
+  padding: 14px 32px;
+  /* רקע כהה חצי-שקוף */
+  background: rgba(10, 13, 15, 0.55);
+  /* טשטוש מה שמאחורי הסרגל (אפקט זכוכית) */
+  backdrop-filter: blur(18px);
+  /* קו דק מתחת לסרגל */
+  border-bottom: 1px solid var(--line);
+/* סוף הסרגל העליון */
 }
 
-.pulse-dot{
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--neon);
-  box-shadow: 0 0 0 0 var(--neon-glow);
-  animation: pulse 1.8s infinite;
+/* אזור המיתוג: לוגו, שם וכפתור LOGIN */
+.cmd-brand{
+  /* פריסה בשורה */
+  display: flex;
+  /* יישור אנכי לאמצע */
+  align-items: center;
+  /* רווח בין הפריטים */
+  gap: 14px;
+/* סוף אזור המיתוג */
 }
 
-@keyframes pulse{
-  0%   { box-shadow: 0 0 0 0 var(--neon-glow); }
-  70%  { box-shadow: 0 0 0 8px rgba(0, 230, 118, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+/* תמונת הלוגו */
+.cmd-logo{
+  /* רוחב */
+  width: 38px;
+  /* גובה */
+  height: 38px;
+  /* התמונה נכנסת בלי להתעוות */
+  object-fit: contain;
+  /* זוהר ירוק סביב הלוגו */
+  filter: drop-shadow(0 0 6px var(--neon-glow));
+/* סוף הלוגו */
 }
 
-.cmd-nav{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-
-.nav-link{
-  position: relative;
-  padding: 8px 4px;
-  margin: 0 10px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-mid);
-  transition: color 0.2s ease;
-}
-
-.nav-link::after{
-  content: "";
-  position: absolute;
-  right: 0; left: 0; bottom: 2px;
-  height: 2px;
-  background: var(--neon);
-  border-radius: 2px;
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.25s ease;
-  box-shadow: 0 0 8px var(--neon-glow);
-}
-
-.nav-link:hover{ color: var(--text-hi); }
-.nav-link:hover::after{ transform: scaleX(0.6); }
-
-.nav-link.active{ color: var(--neon); font-weight: 700; }
-.nav-link.active::after{ transform: scaleX(1); }
-
-/* ===== מבנה בסיס ===== */
-
-main{ max-width: 1180px; margin: 0 auto; padding: 0 32px; }
-
-.section{ padding: 88px 0; }
-
-.section-head{ max-width: 680px; margin: 0 auto 56px; text-align: center; }
-
-.section-kicker{
-  display: inline-block;
+/* שם המערכת */
+.cmd-title{
+  /* כל שם בשורה משלו (מעל שורת הסטטוס) */
+  display: block;
+  /* גופן הכותרות */
   font-family: var(--font-head);
-  font-size: 0.7rem;
+  /* מודגש */
   font-weight: 700;
-  color: var(--neon);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
+  /* גודל */
+  font-size: 0.94rem;
+  /* צבע בהיר */
+  color: var(--text-hi);
+/* סוף שם המערכת */
 }
 
-.section-title{ font-size: 1.9rem; font-weight: 700; margin-bottom: 12px; }
-.section-sub{ color: var(--text-dim); font-size: 0.98rem; }
+/* שורת הסטטוס "מערכת מבצעית פעילה" */
+.cmd-status{
+  /* גודל קטן */
+  font-size: 0.68rem;
+  /* צבע ירוק */
+  color: var(--neon);
+/* סוף שורת הסטטוס */
+}
 
-/* ===== הירו — טיפוגרפיה בולטת עם סמל דהוי ברקע, ממורכזת על הציר האנכי של המסך ===== */
+/* הנקודה הירוקה המהבהבת */
+.pulse-dot{
+  /* מאפשר לתת לה רוחב וגובה בתוך שורה */
+  display: inline-block;
+  /* רוחב */
+  width: 7px;
+  /* גובה */
+  height: 7px;
+  /* רווח מהטקסט */
+  margin-inline-end: 7px;
+  /* יישור לאמצע גובה הטקסט */
+  vertical-align: middle;
+  /* עיגול */
+  border-radius: 50%;
+  /* מילוי ירוק */
+  background: var(--neon);
+  /* הנפשת הגל שמתרחב סביבה */
+  animation: pulse 1.8s infinite;
+/* סוף הנקודה */
+}
 
-/* מעטפת ההירו: עמודה גמישה שממרכזת כל ילד בדיוק על ציר המרכז */
-.hero{
-  /* מיקום יחסי — בסיס לסמל הדהוי שברקע */
+/* הנפשת "דופק": טבעת זוהר מתרחבת ונעלמת */
+@keyframes pulse{
+  /* בהתחלה */
+  0%{
+    /* טבעת צמודה לנקודה */
+    box-shadow: 0 0 0 0 var(--neon-glow);
+  /* סוף שלב ההתחלה */
+  }
+  /* בסוף */
+  100%{
+    /* טבעת רחבה ושקופה */
+    box-shadow: 0 0 0 8px transparent;
+  /* סוף שלב הסיום */
+  }
+/* סוף הנפשת הדופק */
+}
+
+
+
+/* ---------- ניווט ---------- */
+
+/* שורת הקישורים */
+.cmd-nav{
+  /* פריסה בשורה */
+  display: flex;
+  /* ירידת שורה אם אין מקום */
+  flex-wrap: wrap;
+  /* רווח בין הקישורים */
+  gap: 20px;
+/* סוף שורת הקישורים */
+}
+
+/* קישור בניווט */
+.cmd-nav a{
+  /* בסיס למיקום הקו התחתון */
   position: relative;
+  /* ריפוד */
+  padding: 8px 4px;
+  /* גודל טקסט */
+  font-size: 0.85rem;
+  /* משקל בינוני */
+  font-weight: 500;
+/* סוף קישור בניווט */
+}
+
+/* הקו הירוק מתחת לקישור (אלמנט מדומה) */
+.cmd-nav a::after{
+  /* חובה כדי שיופיע */
+  content: "";
+  /* מיקום חופשי בתוך הקישור */
+  position: absolute;
+  /* מתחיל בצד ימין */
+  right: 0;
+  /* נגמר בצד שמאל */
+  left: 0;
+  /* קרוב לתחתית */
+  bottom: 2px;
+  /* עובי הקו */
+  height: 2px;
+  /* צבע ירוק */
+  background: var(--neon);
+  /* בהתחלה ברוחב אפס — לא נראה */
+  transform: scaleX(0);
+  /* שינוי הרוחב יהיה חלק */
+  transition: transform 0.25s;
+/* סוף הקו */
+}
+
+/* קישור במעבר עכבר */
+.cmd-nav a:hover{
+  /* טקסט בהיר */
+  color: var(--text-hi);
+/* סוף מעבר עכבר */
+}
+
+/* הקו במעבר עכבר */
+.cmd-nav a:hover::after{
+  /* מתרחב ל-60% */
+  transform: scaleX(0.6);
+/* סוף הקו במעבר עכבר */
+}
+
+/* הקישור של העמוד הנוכחי */
+.cmd-nav a.active{
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* מודגש */
+  font-weight: 700;
+/* סוף הקישור הנוכחי */
+}
+
+/* הקו של העמוד הנוכחי */
+.cmd-nav a.active::after{
+  /* ברוחב מלא */
+  transform: scaleX(1);
+/* סוף הקו הנוכחי */
+}
+
+/* ---------- מבנה התוכן ---------- */
+
+/* התוכן המרכזי */
+main{
+  /* רוחב מרבי */
+  max-width: 1180px;
+  /* מרכוז במסך */
+  margin: 0 auto;
+  /* ריפוד מהצדדים */
+  padding: 0 32px;
+/* סוף התוכן המרכזי */
+}
+
+/* מקטע תוכן */
+.section{
+  /* ריווח מעל ומתחת */
+  padding: 80px 0;
+/* סוף מקטע */
+}
+
+/* ראש מקטע: תווית, כותרת והסבר */
+.section-head{
+  /* רוחב מרבי */
+  max-width: 680px;
+  /* מרכוז ורווח מתחת */
+  margin: 0 auto 48px;
+  /* טקסט ממורכז */
+  text-align: center;
+/* סוף ראש מקטע */
+}
+
+/* התווית הירוקה הקטנה מעל הכותרת */
+.section-kicker{
+  /* מאפשר רווח מתחת */
+  display: inline-block;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן */
+  font-size: 0.7rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ירוק */
+  color: var(--neon);
+  /* ריווח אותיות רחב */
+  letter-spacing: 0.14em;
+  /* רווח מהכותרת */
+  margin-bottom: 14px;
+/* סוף התווית */
+}
+
+/* כותרת המקטע */
+.section-title{
+  /* גודל */
+  font-size: 1.8rem;
+  /* רווח מתחת */
+  margin-bottom: 10px;
+/* סוף כותרת המקטע */
+}
+
+/* משפט ההסבר מתחת לכותרת */
+.section-sub{
+  /* צבע עמום */
+  color: var(--text-dim);
+/* סוף משפט ההסבר */
+}
+
+/* ---------- רשימה בשלוש עמודות (בעמוד הבית ובהוראות) ---------- */
+
+/* הרשימה */
+.adv-list{
+  /* בלי נקודות של רשימה */
+  list-style: none;
+  /* פריסת טבלה */
+  display: grid;
+  /* שלוש עמודות שוות */
+  grid-template-columns: 1fr 1fr 1fr;
+  /* רווח בין העמודות */
+  gap: 28px;
+/* סוף הרשימה */
+}
+
+/* פריט שבא אחרי פריט אחר (כלומר כל פריט חוץ מהראשון) */
+.adv-item + .adv-item{
+  /* קו הפרדה בצד ימין */
+  border-inline-start: 1px solid var(--line);
+  /* רווח בין הקו לטקסט */
+  padding-inline-start: 28px;
+/* סוף פריט עם קו */
+}
+
+/* כותרת הפריט */
+.adv-item h3{
+  /* גודל */
+  font-size: 1.02rem;
+  /* רווח מעל ומתחת */
+  margin: 14px 0 8px;
+/* סוף כותרת הפריט */
+}
+
+/* הסבר הפריט */
+.adv-item p{
+  /* קטן */
+  font-size: 0.88rem;
+  /* עמום */
+  color: var(--text-dim);
+/* סוף הסבר הפריט */
+}
+
+/* ---------- כותרת תחתונה ---------- */
+
+/* הכותרת התחתונה */
+.cmd-footer{
+  /* טקסט ממורכז */
+  text-align: center;
+  /* ריפוד */
+  padding: 26px 32px 44px;
+  /* קטן */
+  font-size: 0.78rem;
+  /* עמום */
+  color: var(--text-dim);
+  /* קו דק מעל */
+  border-top: 1px solid var(--line);
+/* סוף הכותרת התחתונה */
+}
+
+/* הנקודה המפרידה בכותרת התחתונה */
+.footer-dot{
+  /* ירוק כהה */
+  color: var(--neon-dim);
+  /* רווח משני הצדדים */
+  margin: 0 12px;
+/* סוף הנקודה */
+}
+
+/* ---------- חלון ההתחברות (רק HTML ו-CSS) ---------- */
+
+/* שתי תיבות הסימון ששומרות מצב: "חלון פתוח" ו"מחובר" */
+.modal-toggle,
+/* תיבת הסימון השנייה */
+.auth-state{
+  /* מוסתרות — לוחצים עליהן דרך תוויות label */
+  display: none;
+/* סוף תיבות הסימון */
+}
+
+/* כפתור LOGIN בסרגל */
+.nav-login-btn{
+  /* ריפוד */
+  padding: 7px 18px;
+  /* גבול ירוק */
+  border: 1px solid var(--neon);
+  /* פינות כמעט חדות */
+  border-radius: 3px;
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.78rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריווח אותיות */
+  letter-spacing: 0.18em;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+  /* סמן יד */
+  cursor: pointer;
+  /* זוהר עדין */
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.15);
+/* סוף כפתור LOGIN */
+}
+
+/* כפתור LOGIN במעבר עכבר */
+.nav-login-btn:hover{
+  /* רקע ירוק */
+  background: var(--neon);
+  /* טקסט כהה */
+  color: var(--bg);
+/* סוף מעבר עכבר */
+}
+
+/* תג "מחובר" — מוסתר עד ההתחברות */
+.operator-badge{
+  /* מוסתר */
+  display: none;
+  /* ריפוד */
+  padding: 7px 14px;
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.08);
+  /* גבול ירוק */
+  border: 1px solid var(--neon-dim);
+  /* פינות כמעט חדות */
+  border-radius: 3px;
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.75rem;
+  /* מודגש */
+  font-weight: 700;
+  /* ריווח אותיות */
+  letter-spacing: 0.16em;
+  /* בלי ירידת שורה */
+  white-space: nowrap;
+/* סוף התג */
+}
+
+/* אחרי SIGN IN: מסתירים את LOGIN */
+.auth-state:checked ~ .cmd-bar .nav-login-btn{
+  /* מוסתר */
+  display: none;
+/* סוף הסתרת LOGIN */
+}
+
+/* אחרי SIGN IN: מציגים את תג "מחובר" */
+.auth-state:checked ~ .cmd-bar .operator-badge{
+  /* מוצג */
+  display: inline-block;
+/* סוף הצגת התג */
+}
+
+/* השכבה שמכסה את כל המסך — מוסתרת כברירת מחדל */
+.modal-overlay{
+  /* מוסתרת */
+  display: none;
+  /* קבועה ביחס למסך */
+  position: fixed;
+  /* מכסה את כל המסך */
+  inset: 0;
+  /* מעל הכל */
+  z-index: 1000;
+  /* מרכוז אנכי של החלון */
+  align-items: center;
+  /* מרכוז אופקי של החלון */
+  justify-content: center;
+  /* רווח משולי המסך */
+  padding: 16px;
+  /* רקע שחור חצי-שקוף */
+  background: rgba(0, 0, 0, 0.75);
+  /* טשטוש העמוד שמאחור */
+  backdrop-filter: blur(6px);
+/* סוף השכבה */
+}
+
+/* כשתיבת "חלון פתוח" מסומנת — מציגים את השכבה */
+.modal-toggle:checked ~ .modal-overlay{
+  /* מוצגת ופורסת את החלון במרכז */
+  display: flex;
+/* סוף פתיחת החלון */
+}
+
+/* כשמחוברים — החלון נסגר */
+.auth-state:checked ~ .modal-overlay{
+  /* מוסתרת */
+  display: none;
+/* סוף סגירה אחרי התחברות */
+}
+
+/* הרקע הלחיץ: לחיצה מחוץ לחלון סוגרת אותו */
+.modal-backdrop{
+  /* מיקום חופשי בתוך השכבה */
+  position: absolute;
+  /* מכסה את כל השכבה */
+  inset: 0;
+  /* סמן יד */
+  cursor: pointer;
+/* סוף הרקע הלחיץ */
+}
+
+/* חלון ההתחברות עצמו (טופס) */
+.modal-box{
+  /* מעל הרקע הלחיץ */
+  position: relative;
+  /* רוחב מלא עד הגבול */
+  width: 100%;
+  /* רוחב מרבי */
+  max-width: 420px;
+  /* ריפוד */
+  padding: 28px;
+  /* שתי שכבות רקע: קו ירוק דק למעלה, ומתחתיו רקע כהה שקוף */
+  background: linear-gradient(90deg, transparent, var(--neon), transparent) top / 100% 2px no-repeat, rgba(10, 13, 15, 0.72);
+  /* גבול ירוק עמום */
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  /* פינות מעוגלות */
+  border-radius: 10px;
+  /* צל כהה וזוהר ירוק */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 230, 118, 0.18);
+/* סוף החלון */
+}
+
+/* ראש החלון: כותרת וכפתור X */
+.modal-header{
+  /* פריסה בשורה */
+  display: flex;
+  /* יישור אנכי */
+  align-items: center;
+  /* כותרת בצד אחד ו-X בצד השני */
+  justify-content: space-between;
+  /* רווח מתחת לשורה */
+  padding-bottom: 14px;
+  /* רווח מהשדות */
+  margin-bottom: 22px;
+  /* קו ירוק דק מתחת */
+  border-bottom: 1px solid rgba(0, 230, 118, 0.18);
+/* סוף ראש החלון */
+}
+
+/* כותרת החלון */
+.modal-title{
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.85rem;
+  /* ריווח אותיות */
+  letter-spacing: 0.12em;
+  /* ירוק */
+  color: var(--neon);
+  /* זוהר טקסט */
+  text-shadow: 0 0 8px var(--neon-glow);
+/* סוף כותרת החלון */
+}
+
+/* כפתור הסגירה X */
+.modal-close{
+  /* רוחב */
+  width: 32px;
+  /* גובה */
+  height: 32px;
+  /* מרכוז ה-X בתוך הריבוע */
+  text-align: center;
+  /* גובה שורה = גובה הכפתור — מרכוז אנכי */
+  line-height: 30px;
+  /* גבול אפור */
+  border: 1px solid rgba(159, 179, 171, 0.25);
+  /* פינות מעוגלות קלות */
+  border-radius: 4px;
+  /* סמן יד */
+  cursor: pointer;
+/* סוף כפתור הסגירה */
+}
+
+/* X במעבר עכבר */
+.modal-close:hover{
+  /* אדום */
+  color: var(--danger);
+  /* גבול אדום */
+  border-color: var(--danger);
+/* סוף X במעבר עכבר */
+}
+
+/* תווית שדה */
+.form-label{
+  /* בשורה משלה */
+  display: block;
+  /* רווח מהשדה */
+  margin-bottom: 7px;
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.72rem;
+  /* אותיות גדולות */
+  text-transform: uppercase;
+  /* ריווח אותיות */
+  letter-spacing: 0.14em;
+  /* טקסט באנגלית — משמאל לימין */
+  direction: ltr;
+/* סוף תווית שדה */
+}
+
+/* שדה קלט */
+.form-input{
+  /* בשורה משלו */
+  display: block;
+  /* רוחב מלא */
+  width: 100%;
+  /* רווח מהשדה הבא */
+  margin-bottom: 18px;
+  /* ריפוד */
+  padding: 11px 14px;
+  /* רקע כהה מאוד */
+  background: rgba(4, 6, 7, 0.85);
+  /* גבול ירוק עמום */
+  border: 1px solid rgba(0, 230, 118, 0.22);
+  /* פינות מעוגלות */
+  border-radius: 5px;
+  /* טקסט בהיר */
+  color: var(--text-hi);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.95rem;
+  /* הקלדה משמאל לימין */
+  direction: ltr;
+/* סוף שדה קלט */
+}
+
+/* שדה שהמשתמש מקליד בו כרגע */
+.form-input:focus{
+  /* בלי המסגרת של הדפדפן */
+  outline: none;
+  /* גבול ירוק מלא */
+  border-color: var(--neon);
+  /* זוהר ירוק */
+  box-shadow: 0 0 14px var(--neon-glow);
+/* סוף שדה פעיל */
+}
+
+/* שורת הסטטוס — ברירת מחדל: ממתין (כתום) */
+.login-status{
+  /* ריפוד */
+  padding: 9px 12px;
+  /* רווח מהכפתור */
+  margin-bottom: 18px;
+  /* פס צבע בצד ימין */
+  border-inline-start: 3px solid var(--amber);
+  /* רקע כתום שקוף */
+  background: rgba(255, 179, 0, 0.08);
+  /* טקסט כתום */
+  color: var(--amber);
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* קטן */
+  font-size: 0.78rem;
+/* סוף שורת הסטטוס */
+}
+
+/* הטקסט של שורת הסטטוס כשהטופס לא מלא */
+.login-status::before{
+  /* תוכן הטקסט */
+  content: "AWAITING CREDENTIALS…";
+/* סוף טקסט ממתין */
+}
+
+/* כששני השדות מלאים (הטופס תקין) — הסטטוס ירוק */
+.modal-box:valid .login-status{
+  /* פס ירוק */
+  border-color: var(--neon);
+  /* רקע ירוק שקוף */
+  background: rgba(0, 230, 118, 0.08);
+  /* טקסט ירוק */
+  color: var(--neon);
+/* סוף סטטוס מוכן */
+}
+
+/* הטקסט כשהטופס תקין */
+.modal-box:valid .login-status::before{
+  /* תוכן הטקסט */
+  content: "CREDENTIALS READY — SIGN IN";
+/* סוף טקסט מוכן */
+}
+
+/* כפתור SIGN IN */
+.modal-submit{
+  /* בשורה משלו */
+  display: block;
+  /* ריפוד */
+  padding: 13px;
+  /* טקסט ממורכז */
+  text-align: center;
+  /* רקע ירוק */
+  background: var(--neon);
+  /* טקסט כהה */
+  color: var(--bg);
+  /* פינות מעוגלות */
+  border-radius: 5px;
+  /* גופן מסוף */
+  font-family: var(--font-mono);
+  /* גודל */
+  font-size: 0.88rem;
+  /* מודגש מאוד */
+  font-weight: 800;
+  /* ריווח אותיות */
+  letter-spacing: 0.2em;
+  /* סמן יד */
+  cursor: pointer;
+  /* זוהר ירוק */
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.3);
+/* סוף כפתור SIGN IN */
+}
+
+/* SIGN IN במעבר עכבר */
+.modal-submit:hover{
+  /* מעט בהיר יותר */
+  filter: brightness(1.1);
+/* סוף מעבר עכבר */
+}
+
+/* כל עוד אחד השדות ריק — הכפתור כבוי */
+.modal-box:invalid .modal-submit{
+  /* חצי שקוף */
+  opacity: 0.45;
+  /* אי אפשר ללחוץ עליו */
+  pointer-events: none;
+/* סוף כפתור כבוי */
+}
+
+/* ---------- אזור הפתיחה (Hero) ---------- */
+
+/* מעטפת אזור הפתיחה */
+.hero{
+  /* בסיס למיקום הלוגו הדהוי שברקע */
+  position: relative;
+  /* שכבה נפרדת — כדי שהלוגו יישאר מאחורי הטקסט */
+  isolation: isolate;
   /* פריסה גמישה */
   display: flex;
   /* הילדים אחד מתחת לשני */
   flex-direction: column;
-  /* מרכוז אופקי של כל הילדים */
+  /* מרכוז אופקי */
   align-items: center;
-  /* מרכוז אנכי של התוכן בתוך גובה ההירו */
+  /* מרכוז אנכי */
   justify-content: center;
-  /* מרכוז הטקסט בתוך כל שורה */
+  /* טקסט ממורכז */
   text-align: center;
-  /* גובה מינימלי: כמעט מסך מלא פחות סרגל הניווט — ההירו ממלא את מסך הפתיחה */
+  /* גובה של כמעט מסך מלא */
   min-height: calc(100vh - 78px);
-  /* ריווח אנכי מאוזן מעל ומתחת לתוכן */
+  /* ריווח מעל ומתחת */
   padding: 72px 0;
-  /* רוחב מרבי של אזור ההירו */
+  /* רוחב מרבי */
   max-width: 860px;
-  /* מרכוז ההירו בתוך main */
+  /* מרכוז בתוך העמוד */
   margin: 0 auto;
-  /* שכבת ערימה עצמאית — הסמל הדהוי נשאר מאחורי הטקסט ולא מתחת לרקע הדף */
-  isolation: isolate;
-/* סגירת בלוק .hero */
+/* סוף אזור הפתיחה */
 }
 
-/* הסמל הדהוי ברקע — ממורכז בדיוק מאחורי הכותרת */
+/* הלוגו הדהוי ברקע (אלמנט מדומה) */
 .hero::before{
-  /* פסאודו-אלמנט חייב תוכן */
+  /* חובה כדי שיופיע */
   content: "";
-  /* מיקום מוחלט ביחס להירו */
+  /* מיקום חופשי בתוך אזור הפתיחה */
   position: absolute;
-  /* נקודת עיגון אנכית במרכז */
+  /* נקודת העיגון באמצע הגובה */
   top: 50%;
-  /* נקודת עיגון אופקית במרכז */
+  /* נקודת העיגון באמצע הרוחב */
   left: 50%;
-  /* רוחב הסמל — לא חורג מרוחב המסך */
+  /* רוחב הלוגו — לא יותר מרוחב המסך */
   width: min(640px, 92vw);
-  /* גובה ביחס לבאנר הלוגו (497×193) */
-  aspect-ratio: 497 / 193;
-  /* הזזה חזרה בחצי מהגודל — מרכוז מדויק */
+  /* יחס רוחב-גובה של תמונת הלוגו */
+  aspect-ratio: 498 / 193;
+  /* הזזה אחורה בחצי מהגודל — מרכוז מדויק */
   transform: translate(-50%, -50%);
   /* תמונת הלוגו */
   background-image: url("assets/logo.png");
-  /* ללא חזרה */
-  background-repeat: no-repeat;
-  /* ממורכזת */
-  background-position: center;
-  /* מותאמת בדיוק לאלמנט */
-  background-size: contain;
-  /* דהייה רכה בקצוות — מעלים את המלבן של הבאנר ומשאיר הילה עגולה */
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
-  /* אותה דהייה בתחביר התקני */
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
-  /* שקיפות גבוהה מאוד — רק רמז ברקע */
+  /* התמונה ממלאת את כל הרוחב */
+  background-size: 100%;
+  /* דהייה רכה בקצוות התמונה */
+  mask-image: radial-gradient(closest-side, #000 35%, transparent);
+  /* כמעט שקוף — רק רמז */
   opacity: 0.07;
-  /* הגברת רוויה קלה לירוק */
-  filter: saturate(1.4);
-  /* לא חוסם לחיצות */
-  pointer-events: none;
   /* מאחורי הטקסט */
   z-index: -1;
-/* סגירת בלוק .hero::before */
+/* סוף הלוגו הדהוי */
 }
 
-/* תגית טכנית מעל הכותרת */
+/* התגית הקטנה מעל הכותרת */
 .hero-tag{
-  /* בלוק בגודל התוכן — הקו התחתון ברוחב הטקסט בלבד */
-  display: inline-block;
-  /* לא חורג מרוחב המסך בטלפון צר — נשבר לשורה שנייה במקום לגלוש */
-  max-width: 100%;
-  /* גופן כותרות */
+  /* גופן הכותרות */
   font-family: var(--font-head);
-  /* גודל קטן */
+  /* קטן */
   font-size: 0.72rem;
-  /* משקל בינוני-מודגש */
+  /* חצי מודגש */
   font-weight: 600;
-  /* ירוק טקטי */
+  /* ירוק */
   color: var(--neon);
   /* ריווח אותיות רחב */
   letter-spacing: 0.16em;
-  /* פיצוי על ריווח האות האחרונה — הטקסט יושב בדיוק במרכז */
-  padding-inline-start: 0.16em;
-  /* ריווח מתחת לטקסט, מעל הקו */
+  /* רווח בין הטקסט לקו */
   padding-bottom: 10px;
-  /* מרווח מהכותרת */
+  /* רווח מהכותרת */
   margin-bottom: 28px;
-  /* קו דק מתחת לתגית */
-  border-bottom: 1px solid var(--hairline);
-  /* כיוון משמאל לימין — טקסט אנגלי */
+  /* קו דק מתחת */
+  border-bottom: 1px solid var(--line);
+  /* טקסט באנגלית — משמאל לימין */
   direction: ltr;
-/* סגירת בלוק .hero-tag */
+/* סוף התגית */
 }
 
 /* הכותרת הראשית */
 .hero-title{
-  /* גודל רספונסיבי */
+  /* גודל שמשתנה לפי רוחב המסך */
   font-size: clamp(2.2rem, 5.4vw, 3.6rem);
-  /* משקל כבד */
+  /* עבה מאוד */
   font-weight: 900;
-  /* גובה שורה צפוף — שתי השורות נראות כיחידה אחת */
+  /* שורות צפופות */
   line-height: 1.12;
-  /* ריווח אותיות קל */
-  letter-spacing: 0.01em;
-  /* כיוון משמאל לימין — טקסט אנגלי */
+  /* טקסט באנגלית — משמאל לימין */
   direction: ltr;
-  /* איזון השורות — כשהכותרת נשברת, השורות יוצאות באורך דומה */
+  /* כשהכותרת נשברת — השורות יוצאות באורך דומה */
   text-wrap: balance;
-  /* צבע טקסט בהיר */
-  color: var(--text-hi);
   /* זוהר ירוק עדין */
   text-shadow: 0 0 40px rgba(0, 230, 118, 0.22);
-  /* ללא שוליים — הריווח נקבע בתגית ובסיסמה */
-  margin: 0;
-/* סגירת בלוק .hero-title */
+/* סוף הכותרת */
 }
 
 /* הנקודה הירוקה בכותרת */
-.hero-title-accent{
-  /* צבע ירוק טקטי */
+.accent{
+  /* ירוק */
   color: var(--neon);
-/* סגירת בלוק .hero-title-accent */
+/* סוף הנקודה */
 }
 
-/* סיסמת המערכת מתחת לכותרת */
+/* סיסמת המערכת */
 .hero-motto{
-  /* גופן כותרות */
+  /* גופן הכותרות */
   font-family: var(--font-head);
-  /* כיוון משמאל לימין — טקסט אנגלי */
-  direction: ltr;
-  /* גודל טקסט */
+  /* גודל */
   font-size: 1.06rem;
-  /* משקל רגיל */
-  font-weight: 400;
-  /* ירוק טקטי */
+  /* ירוק */
   color: var(--neon);
   /* ריווח אותיות */
   letter-spacing: 0.1em;
-  /* פיצוי על ריווח האות האחרונה — מרכוז מדויק */
-  padding-inline-start: 0.1em;
-  /* ריווח שווה מעל ומתחת — מאוזן ביחס לכותרת ולפסקה */
+  /* רווח מעל ומתחת */
   margin: 18px 0 28px;
-/* סגירת בלוק .hero-motto */
+  /* טקסט באנגלית — משמאל לימין */
+  direction: ltr;
+/* סוף הסיסמה */
 }
 
-/* פסקת התיאור — בלוק ממורכז ברוחב מוגבל */
+/* פסקת התיאור */
 .hero-desc{
-  /* גודל טקסט */
+  /* גודל */
   font-size: 1.02rem;
-  /* צבע טקסט בינוני */
-  color: var(--text-mid);
-  /* רוחב מרבי — שורות קריאות שלא נמתחות לכל המסך */
+  /* רוחב מרבי — שורות קריאות */
   max-width: 700px;
-  /* רוחב מלא עד הגבול */
-  width: 100%;
-  /* מרכוז הבלוק ומרווח מהכפתורים */
-  margin: 0 auto 44px;
-  /* מרכוז כל שורה */
-  text-align: center;
-  /* מניעת מילה בודדת בשורה האחרונה */
-  text-wrap: pretty;
-/* סגירת בלוק .hero-desc */
+  /* רווח מהכפתורים */
+  margin-bottom: 44px;
+/* סוף התיאור */
 }
 
-/* כפתורי הפעולה — שורה ממורכזת */
+/* שורת הכפתורים */
 .hero-actions{
-  /* פריסה גמישה */
+  /* פריסה בשורה */
   display: flex;
+  /* ירידת שורה אם אין מקום */
+  flex-wrap: wrap;
+  /* מרכוז */
+  justify-content: center;
   /* רווח בין הכפתורים */
   gap: 16px;
-  /* מרכוז הכפתורים */
-  justify-content: center;
-  /* שבירה לשורה חדשה במסך צר */
-  flex-wrap: wrap;
-/* סגירת בלוק .hero-actions */
+/* סוף שורת הכפתורים */
 }
 
-/* ===== כפתורים ===== */
+/* ---------- כפתורים ---------- */
 
+/* כפתור בסיסי */
 .btn{
+  /* מאפשר ריפוד */
   display: inline-block;
+  /* ריפוד */
   padding: 13px 30px;
+  /* גופן הכותרות */
   font-family: var(--font-head);
+  /* גודל */
   font-size: 0.92rem;
+  /* מודגש */
   font-weight: 700;
+  /* צורת גלולה */
   border-radius: 999px;
+  /* גבול שקוף (כדי שלכל הכפתורים יהיה אותו גודל) */
   border: 1px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  /* תזוזה חלקה במעבר עכבר */
+  transition: transform 0.15s;
+/* סוף כפתור בסיסי */
 }
 
+/* כפתור ירוק */
 .btn-primary{
+  /* רקע ירוק */
   background: var(--neon);
+  /* טקסט כהה */
   color: #04120a;
+  /* זוהר ירוק */
   box-shadow: 0 0 26px var(--neon-glow);
+/* סוף כפתור ירוק */
 }
 
-.btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 0 38px var(--neon-glow); }
+/* כפתור ירוק במעבר עכבר */
+.btn-primary:hover{
+  /* עולה 2 פיקסלים */
+  transform: translateY(-2px);
+/* סוף מעבר עכבר */
+}
 
+/* כפתור שקוף */
 .btn-ghost{
-  background: transparent;
+  /* טקסט בהיר */
   color: var(--text-hi);
-  border-color: var(--hairline);
+  /* גבול דק */
+  border-color: var(--line);
+/* סוף כפתור שקוף */
 }
 
-.btn-ghost:hover{ border-color: var(--neon-dim); color: var(--neon); }
+/* כפתור שקוף במעבר עכבר */
+.btn-ghost:hover{
+  /* טקסט ירוק */
+  color: var(--neon);
+  /* גבול ירוק */
+  border-color: var(--neon-dim);
+/* סוף מעבר עכבר */
+}
 
-.btn-cta{
-  background: var(--neon);
-  color: #04120a;
+/* כפתור גדול (בקריאה לפעולה) */
+.btn-big{
+  /* טקסט גדול יותר */
   font-size: 1rem;
+  /* ריפוד גדול יותר */
   padding: 16px 40px;
-  box-shadow: 0 0 32px var(--neon-glow);
+/* סוף כפתור גדול */
 }
 
-.btn-cta:hover{ transform: translateY(-2px) scale(1.01); box-shadow: 0 0 48px var(--neon-glow); }
+/* ---------- השרשרת המבצעית ---------- */
 
-/* ===== שרשרת מבצעית — סרט אנרגיה זוהר במקום כרטיסיות ===== */
-
+/* רשימת השלבים */
 .ribbon{
+  /* בלי מספור אוטומטי */
   list-style: none;
+  /* בסיס למיקום הקו */
   position: relative;
+  /* השלבים בשורה */
   display: flex;
-  justify-content: space-between;
+  /* רווח בין השלבים */
   gap: 8px;
+/* סוף רשימת השלבים */
 }
 
-.ribbon-line{
-  position: absolute;
-  top: 17px;
-  right: 4%;
-  left: 4%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-dim) 12%, var(--neon) 50%, var(--neon-dim) 88%, transparent);
-  overflow: hidden;
-  border-radius: 2px;
-}
-
-.ribbon-line::after{
+/* הקו הירוק שעובר מאחורי העיגולים (אלמנט מדומה) */
+.ribbon::before{
+  /* חובה כדי שיופיע */
   content: "";
+  /* מיקום חופשי בתוך הרשימה */
   position: absolute;
-  inset: 0;
-  width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
-  animation: conduit-flow 3.6s linear infinite;
+  /* בגובה מרכז העיגולים */
+  top: 17px;
+  /* מרווח מצד ימין */
+  right: 4%;
+  /* מרווח מצד שמאל */
+  left: 4%;
+  /* עובי הקו */
+  height: 2px;
+  /* ירוק שנמוג בקצוות */
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+/* סוף הקו */
 }
 
-@keyframes conduit-flow{
-  from{ transform: translateX(-120%); }
-  to{ transform: translateX(340%); }
-}
-
+/* שלב בודד */
 .stage{
+  /* כל השלבים ברוחב שווה */
   flex: 1;
+  /* פריסה גמישה */
   display: flex;
+  /* עיגול, כותרת והסבר אחד מתחת לשני */
   flex-direction: column;
+  /* מרכוז אופקי */
   align-items: center;
+  /* טקסט ממורכז */
   text-align: center;
+  /* ריפוד מהצדדים */
   padding: 0 10px;
-  position: relative;
-  z-index: 1;
+/* סוף שלב */
 }
 
+/* העיגול עם המספר */
 .stage-node{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, rgba(0, 230, 118, 0.3), rgba(10, 13, 15, 0.95));
-  border: 1px solid var(--neon-dim);
-  box-shadow: 0 0 20px var(--neon-glow);
-  margin-bottom: 20px;
-}
-
-.stage-num{
-  font-family: var(--font-head);
-  font-size: 0.7rem;
-  font-weight: 800;
-  color: var(--neon);
-}
-
-.stage-title{ font-size: 0.96rem; font-weight: 700; margin-bottom: 8px; }
-.stage-desc{ font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; max-width: 190px; }
-
-/* ===== יתרונות מבצעיים — רשימה רציפה עם קווי הפרדה ===== */
-
-.adv-list{
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.adv-item{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 4px 28px;
-  text-align: right;
-  border-inline-start: 1px solid var(--hairline);
-}
-
-.adv-item:first-child{ border-inline-start: none; padding-inline-start: 0; }
-
-.adv-mark{
-  font-family: var(--font-head);
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--neon);
-  letter-spacing: 0.08em;
-  border-bottom: 1px solid var(--neon-dim);
-  padding-bottom: 8px;
-}
-
-.adv-copy h3{ font-size: 1.02rem; font-weight: 700; margin-bottom: 8px; }
-.adv-copy p{ font-size: 0.88rem; color: var(--text-dim); }
-
-/* ===== קריאה לפעולה — ללא תיבה, רק קו זוהר ===== */
-
-.cta-section{ text-align: center; border-top: 1px solid var(--hairline); }
-
-.cta-inner{ max-width: 520px; margin: 0 auto; }
-
-.cta-title{ font-size: 1.6rem; margin-bottom: 12px; }
-.cta-desc{ color: var(--text-mid); margin-bottom: 30px; }
-
-/* ===== פוטר ===== */
-
-.cmd-footer{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 26px 32px 44px;
-  font-size: 0.78rem;
-  color: var(--text-dim);
+  /* מעל הקו */
+  position: relative;
+  /* רוחב */
+  width: 34px;
+  /* גובה */
+  height: 34px;
+  /* גובה שורה — מרכוז אנכי של המספר */
+  line-height: 32px;
+  /* מרכוז אופקי של המספר */
   text-align: center;
-  flex-wrap: wrap;
-  border-top: 1px solid var(--hairline);
+  /* עיגול */
+  border-radius: 50%;
+  /* רקע כהה שמסתיר את הקו */
+  background: var(--bg);
+  /* גבול ירוק */
+  border: 1px solid var(--neon-dim);
+  /* זוהר ירוק */
+  box-shadow: 0 0 20px var(--neon-glow);
+  /* רווח מהכותרת */
+  margin-bottom: 20px;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן */
+  font-size: 0.7rem;
+  /* עבה */
+  font-weight: 800;
+  /* ירוק */
+  color: var(--neon);
+/* סוף העיגול */
 }
 
-.footer-dot{ color: var(--neon-dim); }
+/* כותרת השלב */
+.stage h3{
+  /* גודל */
+  font-size: 0.96rem;
+  /* רווח מתחת */
+  margin-bottom: 8px;
+/* סוף כותרת השלב */
+}
 
-/* ===== רספונסיביות ===== */
+/* הסבר השלב */
+.stage p{
+  /* קטן */
+  font-size: 0.8rem;
+  /* עמום */
+  color: var(--text-dim);
+  /* מרווח שורות */
+  line-height: 1.6;
+  /* רוחב מרבי */
+  max-width: 190px;
+/* סוף הסבר השלב */
+}
 
+/* ---------- יתרונות וקריאה לפעולה ---------- */
+
+/* המספר הירוק מעל כל יתרון */
+.adv-mark{
+  /* מאפשר ריפוד וקו */
+  display: inline-block;
+  /* גופן הכותרות */
+  font-family: var(--font-head);
+  /* קטן */
+  font-size: 0.72rem;
+  /* עבה */
+  font-weight: 800;
+  /* ירוק */
+  color: var(--neon);
+  /* רווח בין המספר לקו */
+  padding-bottom: 8px;
+  /* קו ירוק מתחת */
+  border-bottom: 1px solid var(--neon-dim);
+/* סוף המספר */
+}
+
+/* מקטע הקריאה לפעולה */
+.cta-section{
+  /* טקסט ממורכז */
+  text-align: center;
+  /* קו דק מעל */
+  border-top: 1px solid var(--line);
+/* סוף המקטע */
+}
+
+/* כותרת הקריאה לפעולה */
+.cta-title{
+  /* גודל */
+  font-size: 1.6rem;
+  /* רווח מתחת */
+  margin-bottom: 12px;
+/* סוף הכותרת */
+}
+
+/* משפט ההסבר */
+.cta-desc{
+  /* רווח מהכפתור */
+  margin-bottom: 30px;
+/* סוף משפט ההסבר */
+}
+
+/* ---------- מסך צר ---------- */
+
+/* מסך ברוחב עד 900 פיקסלים */
 @media (max-width: 900px){
-  .adv-list{ grid-template-columns: 1fr; }
-  .adv-item{ border-inline-start: none; border-top: 1px solid var(--hairline); padding: 28px 0 0; }
-  .adv-item:first-child{ border-top: none; padding-top: 0; }
+  /* הרשימה בשלוש עמודות */
+  .adv-list{
+    /* עמודה אחת */
+    grid-template-columns: 1fr;
+  /* סוף הרשימה */
+  }
+  /* פריט שאינו הראשון */
+  .adv-item + .adv-item{
+    /* בלי קו בצד */
+    border-inline-start: none;
+    /* בלי ריפוד בצד */
+    padding-inline-start: 0;
+    /* קו מעל במקום בצד */
+    border-top: 1px solid var(--line);
+    /* רווח מתחת לקו */
+    padding-top: 28px;
+  /* סוף פריט */
+  }
+/* סוף מסך עד 900 */
 }
 
+/* מסך ברוחב עד 820 פיקסלים */
 @media (max-width: 820px){
-  .ribbon{ flex-direction: column; align-items: stretch; gap: 30px; }
-  .ribbon-line{ top: 0; bottom: 0; right: 17px; left: auto; width: 2px; height: auto; }
-  .stage{ flex-direction: row; text-align: right; align-items: flex-start; gap: 18px; padding: 0; }
-  .stage-node{ margin-bottom: 0; flex: 0 0 auto; }
+  /* רשימת השלבים */
+  .ribbon{
+    /* השלבים אחד מתחת לשני */
+    flex-direction: column;
+    /* רווח גדול יותר */
+    gap: 30px;
+  /* סוף רשימת השלבים */
+  }
+  /* הקו */
+  .ribbon::before{
+    /* מתחיל למעלה */
+    top: 0;
+    /* נגמר למטה */
+    bottom: 0;
+    /* במרכז העיגולים */
+    right: 17px;
+    /* ביטול המיקום משמאל */
+    left: auto;
+    /* קו אנכי דק */
+    width: 2px;
+    /* הגובה נקבע לפי למעלה ולמטה */
+    height: auto;
+    /* ירוק אחיד */
+    background: var(--neon-dim);
+  /* סוף הקו */
+  }
+  /* שלב */
+  .stage{
+    /* עיגול, כותרת והסבר בשורה */
+    flex-direction: row;
+    /* יישור למעלה */
+    align-items: flex-start;
+    /* טקסט מיושר לימין */
+    text-align: right;
+    /* רווח בין החלקים */
+    gap: 18px;
+    /* בלי ריפוד */
+    padding: 0;
+  /* סוף שלב */
+  }
+  /* העיגול */
+  .stage-node{
+    /* בלי רווח מתחת */
+    margin-bottom: 0;
+    /* העיגול לא מתכווץ */
+    flex-shrink: 0;
+  /* סוף העיגול */
+  }
+/* סוף מסך עד 820 */
 }
 
+/* מסך ברוחב עד 720 פיקסלים (טלפון) */
 @media (max-width: 720px){
-  .cmd-bar{ flex-direction: column; align-items: flex-start; gap: 14px; }
-  .cmd-nav{ width: 100%; justify-content: flex-start; }
+  /* הסרגל העליון */
+  .cmd-bar{
+    /* מיתוג מעל וניווט מתחת */
+    flex-direction: column;
+    /* יישור לימין */
+    align-items: flex-start;
+    /* רווח קטן יותר */
+    gap: 14px;
+  /* סוף הסרגל */
+  }
+/* סוף מסך עד 720 */
 }
